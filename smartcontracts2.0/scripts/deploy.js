@@ -4,12 +4,13 @@ async function main() {
   // Deploy FundFactory
   const FundFactory = await ethers.getContractFactory("FundFactory");
   const fundFactory = await FundFactory.deploy();
-  await fundFactory.deployed();
-  console.log("✓ FundFactory deployed to:", fundFactory.address);
+  await fundFactory.waitForDeployment();
+  const fundFactoryAddress = await fundFactory.getAddress();
+  console.log("FundFactory deployed to:", fundFactoryAddress);
 
   // Save deployment addresses
   const deploymentAddresses = {
-    FundFactory: fundFactory.address,
+    FundFactory: fundFactoryAddress,
     deployedAt: new Date().toISOString(),
     network: (await ethers.provider.getNetwork()).name,
   };
