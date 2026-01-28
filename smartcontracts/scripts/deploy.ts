@@ -1,12 +1,18 @@
-import { ethers } from "hardhat";
+import hre from "hardhat";
 
 async function main() {
-  const Factory = await ethers.getContractFactory("FundFactory");
-  const factory = await Factory.deploy();
+  const publicClient = await hre.viem.getPublicClient();
+  const [deployerAccount] = await hre.viem.getWalletClients();
+  
+  const Factory = await hre.viem.getContractFactory("FundFactory");
+  const factory = await hre.viem.deployContract("FundFactory", [], {
+    account: deployerAccount.account,
+  });
 
-  await factory.waitForDeployment();
-
-  console.log("Factory deployed at:", await factory.getAddress());
+  console.log("Factory deployed at:", factory.address);
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
