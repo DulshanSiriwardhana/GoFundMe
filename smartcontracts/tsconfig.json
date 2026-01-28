@@ -5,6 +5,7 @@
     "module": "node16",
     "target": "es2022",
     "strict": true,
+    "types": ["node", "hardhat", "@nomicfoundation/hardhat-ethers"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",
