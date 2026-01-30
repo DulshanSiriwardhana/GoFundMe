@@ -1,8 +1,8 @@
 // Contract addresses and ABIs for smartcontracts2.0
 // Update these with actual deployed addresses
 
-export const FACTORY_ADDRESS = process.env.REACT_APP_FACTORY_ADDRESS || "0x8ba1f109551bd432803012645ac136ddd64dba72"; // Replace with deployed address
-export const FUND_ADDRESS = process.env.REACT_APP_FUND_ADDRESS || ""; // Individual fund addresses from factory
+export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with deployed address
+export const FUND_ADDRESS = import.meta.env.VITE_FUND_ADDRESS || ""; // Individual fund addresses from factory
 
 export const FACTORY_ABI = [
   {
