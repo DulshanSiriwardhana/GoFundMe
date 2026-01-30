@@ -13,7 +13,7 @@ export default function CreateFund() {
   const [formData, setFormData] = useState({
     name: "",
     goal: "",
-    duration: "30", // days
+    duration: "30",
   });
 
   const [loading, setLoading] = useState(false);
@@ -36,15 +36,16 @@ export default function CreateFund() {
 
       const tx = await factory.createFund(formData.name, goalInWei, durationInSeconds);
 
-      // Wait for transaction receipt
-      const receipt = await tx.wait();
+      await tx.wait();
 
-      // Look for FundCreated event to get the address (optional, or just go to home)
-      // For now, simpler to redirect home
       navigate("/");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.reason || err.message || "Failed to create fund.");
+      let message = "Failed to create fund.";
+      if (err instanceof Error) {
+        message = (err as { reason?: string; message?: string }).reason || err.message || message;
+      }
+      setError(message);
     } finally {
       setLoading(false);
     }

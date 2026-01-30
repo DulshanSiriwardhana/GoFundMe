@@ -201,7 +201,6 @@ export const FUND_ABI = [
   },
 ] as const;
 
-// Types for better TypeScript support
 export interface FundData {
   address: string;
   creator: string;

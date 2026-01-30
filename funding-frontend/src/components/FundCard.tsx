@@ -1,4 +1,4 @@
-import { Users, Clock, Target, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Clock, Users } from "lucide-react";
 import { Card } from "./ui/Card";
 
 interface FundCardProps {
@@ -7,9 +7,8 @@ interface FundCardProps {
   raised: string;
   creator: string;
   deadline: number;
-  goalReached: boolean;
   contributors: number;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 export default function FundCard({
@@ -18,7 +17,6 @@ export default function FundCard({
   raised,
   creator,
   deadline,
-  goalReached,
   contributors,
   onClick,
 }: FundCardProps) {
@@ -35,7 +33,6 @@ export default function FundCard({
           {isActive ? "Active" : "Closed"}
         </div>
         <div className="text-white">
-          {/* Placeholder for project icon or identicon usually */}
         </div>
       </div>
 

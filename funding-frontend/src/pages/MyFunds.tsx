@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
@@ -10,13 +10,7 @@ export default function MyFunds() {
   const [funds, setFunds] = useState<FundData[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (account && provider) {
-      loadMyFunds();
-    }
-  }, [account, provider]);
-
-  const loadMyFunds = async () => {
+  const loadMyFunds = useCallback(async () => {
     if (!provider || !account) return;
     try {
       setLoading(true);
@@ -59,7 +53,7 @@ export default function MyFunds() {
               totalRaised: ethers.formatEther(totalRaised),
               goalReached,
               contributorCount: Number(contributorCount),
-              requestCount: 0 // Not needed for card
+              requestCount: 0
             });
           }
         } catch (err) {
@@ -72,7 +66,13 @@ export default function MyFunds() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [account, provider]);
+
+  useEffect(() => {
+    if (account && provider) {
+      loadMyFunds();
+    }
+  }, [account, provider, loadMyFunds]);
 
   if (!account) {
     return (
@@ -101,7 +101,6 @@ export default function MyFunds() {
               raised={fund.totalRaised}
               creator={fund.creator}
               deadline={fund.deadline}
-              goalReached={fund.goalReached}
               contributors={fund.contributorCount}
               onClick={() => window.location.href = `/fund/${fund.address}`}
             />

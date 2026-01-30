@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { useWeb3 } from "../context/Web3Context";
 import { FUND_ABI, type FundData } from "../utils/contract";
 import { Card } from "../components/ui/Card";
-import { Copy, Share2, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 export default function FundDetails() {
     const { address } = useParams();
@@ -14,13 +14,7 @@ export default function FundDetails() {
     const [amount, setAmount] = useState("");
     const [donating, setDonating] = useState(false);
 
-    useEffect(() => {
-        if (address && provider) {
-            loadFundData();
-        }
-    }, [address, provider]);
-
-    const loadFundData = async () => {
+    const loadFundData = useCallback(async () => {
         if (!address || !provider) return;
         try {
             const contract = new ethers.Contract(address, FUND_ABI, provider);
@@ -50,7 +44,13 @@ export default function FundDetails() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [address, provider]);
+
+    useEffect(() => {
+        if (address && provider) {
+            loadFundData();
+        }
+    }, [address, provider, loadFundData]);
 
     const handleDonate = async () => {
         if (!fund || !signer || !amount) return;
@@ -62,9 +62,15 @@ export default function FundDetails() {
             alert("Donation successful!");
             loadFundData();
             setAmount("");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Donation failed:", error);
-            alert("Donation failed: " + (error.reason || error.message));
+            let message = "Donation failed";
+            if (error instanceof Error) {
+                message += ": " + (error.message);
+            } else if (typeof error === 'object' && error !== null && 'reason' in error) {
+                message += ": " + (error as { reason: string }).reason;
+            }
+            alert(message);
         } finally {
             setDonating(false);
         }
@@ -78,7 +84,6 @@ export default function FundDetails() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
             <div className="flex flex-col md:flex-row gap-8">
                 <div className="flex-1 space-y-4">
                     <div className="inline-block px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold uppercase tracking-wide">
@@ -97,10 +102,8 @@ export default function FundDetails() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Content */}
                 <div className="lg:col-span-2 space-y-6">
                     <Card className="aspect-video bg-slate-100 flex items-center justify-center text-slate-400">
-                        {/* Placeholders for image */}
                         <span className="text-lg font-medium">Campaign Image Placeholder</span>
                     </Card>
 
@@ -113,7 +116,6 @@ export default function FundDetails() {
                     </Card>
                 </div>
 
-                {/* Sidebar / Donation actions */}
                 <div className="space-y-6">
                     <Card className="p-8 sticky top-24 border-indigo-100 shadow-indigo-100/50">
                         <div className="space-y-6">

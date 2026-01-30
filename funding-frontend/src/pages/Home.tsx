@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { ArrowRight, Zap, Globe, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,22 +11,17 @@ export default function Home() {
   const { provider } = useWeb3();
   const [loading, setLoading] = useState(false);
 
-  // Fallback provider if wallet not connected, to read data
-  const getReadProvider = () => {
+  const getReadProvider = useCallback(() => {
     if (provider) return provider;
     if (typeof window.ethereum !== 'undefined') {
       return new ethers.BrowserProvider(window.ethereum);
     }
     return null;
-  }
-
-  useEffect(() => {
-    loadFunds();
   }, [provider]);
 
-  const loadFunds = async () => {
+  const loadFunds = useCallback(async () => {
     const readProvider = getReadProvider();
-    if (!readProvider) return; // Can't read without provider (could use JsonRpcProvider for read-only in future)
+    if (!readProvider) return;
 
     try {
       setLoading(true);
@@ -39,7 +34,6 @@ export default function Home() {
       const fundAddresses = await factory.getFunds();
       const fundData: FundData[] = [];
 
-      // Limit to 10 for now to avoid spamming RPC
       for (const address of fundAddresses.slice(-10)) {
         try {
           const FUND_ABI_PARTIAL = [
@@ -87,11 +81,14 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getReadProvider]);
+
+  useEffect(() => {
+    loadFunds();
+  }, [loadFunds]);
 
   return (
     <div className="space-y-16 pb-16">
-      {/* Hero Section */}
       <section className="relative overflow-hidden rounded-3xl bg-indigo-600 text-white shadow-2xl">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-bl from-purple-500/30 to-transparent transform translate-x-1/4 skew-x-12"></div>
         <div className="relative z-10 px-8 py-20 sm:px-12 lg:px-16 flex flex-col md:flex-row items-center gap-12">
@@ -115,7 +112,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Feature Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
             {[
               { icon: Zap, label: "Instant Payouts", desc: "No waiting for banks." },
@@ -132,7 +128,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Funds List */}
       <section id="explore">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-slate-900">Trending Campaigns</h2>
@@ -154,7 +149,6 @@ export default function Home() {
                 raised={fund.totalRaised}
                 creator={fund.creator}
                 deadline={fund.deadline}
-                goalReached={fund.goalReached}
                 contributors={fund.contributorCount}
                 onClick={() => window.location.href = `/fund/${fund.address}`}
               />

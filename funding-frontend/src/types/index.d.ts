@@ -1,4 +1,3 @@
-// Global type declarations for Web3/MetaMask
 
 interface EthereumProvider {
   isMetaMask?: boolean;
@@ -14,4 +13,4 @@ declare global {
   }
 }
 
-export {};
+export { };

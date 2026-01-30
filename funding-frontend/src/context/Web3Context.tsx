@@ -34,8 +34,13 @@ export function Web3Provider({ children }: { children: ReactNode }) {
             } else {
                 setError("Please install MetaMask!");
             }
-        } catch (err: any) {
-            setError(err.message || "Failed to connect wallet");
+        } catch (err: unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Failed to connect wallet");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -63,9 +68,10 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
         init();
 
-        const handleAccountsChanged = (accounts: any) => {
-            if (accounts.length > 0) {
-                setAccount(accounts[0]);
+        const handleAccountsChanged = (accounts: unknown) => {
+            const accs = accounts as string[];
+            if (accs.length > 0) {
+                setAccount(accs[0]);
                 window.location.reload();
             } else {
                 setAccount(null);
@@ -90,5 +96,6 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         </Web3Context.Provider>
     );
 }
+
 
 export const useWeb3 = () => useContext(Web3Context);
