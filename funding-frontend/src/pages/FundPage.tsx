@@ -6,6 +6,10 @@ export default function FundPage({ fundAddress }: { fundAddress: string }) {
   const [amount, setAmount] = useState("");
 
   async function deposit() {
+    if (!window.ethereum) {
+      alert("Please install MetaMask");
+      return;
+    }
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
 
