@@ -1,4 +1,5 @@
-import { Users, Clock, Target } from "lucide-react";
+import { Users, Clock, Target, ArrowUpRight } from "lucide-react";
+import { Card } from "./ui/Card";
 
 interface FundCardProps {
   name: string;
@@ -21,80 +22,65 @@ export default function FundCard({
   contributors,
   onClick,
 }: FundCardProps) {
-  const progress = (parseFloat(raised) / parseFloat(goal)) * 100;
+  const progress = Math.min((parseFloat(raised) / parseFloat(goal)) * 100, 100);
   const timeLeft = new Date(deadline * 1000).toLocaleDateString();
-  const isActive = deadline > Date.now() / 1000;
+  const isActive = deadline * 1000 > Date.now();
 
   const formatAddress = (addr: string) => `${addr?.slice(0, 6)}...${addr?.slice(-4)}`;
 
   return (
-    <div
-      onClick={onClick}
-      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden border border-gray-100"
-    >
-      <div className="h-32 bg-linear-to-r from-blue-500 to-indigo-600 relative">
-        <div className="absolute top-3 right-3">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-            }`}
-          >
-            {isActive ? "Active" : "Ended"}
-          </span>
+    <Card onClick={onClick} className="group cursor-pointer p-0 overflow-hidden hover:shadow-xl hover:border-indigo-200 transition-all duration-300">
+      <div className="h-40 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative flex items-end p-4">
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-indigo-900 shadow-sm">
+          {isActive ? "Active" : "Closed"}
+        </div>
+        <div className="text-white">
+          {/* Placeholder for project icon or identicon usually */}
         </div>
       </div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-900 truncate mb-2">{name}</h3>
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-xl font-extrabold text-slate-900 truncate flex-1 pr-4 group-hover:text-indigo-600 transition-colors">
+            {name}
+          </h3>
+          <ArrowUpRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 transition-colors" />
+        </div>
 
-        <p className="text-xs text-gray-500 mb-3">
-          Creator: <span className="font-medium">{formatAddress(creator)}</span>
+        <p className="text-xs font-medium text-slate-500 mb-6 flex items-center gap-1">
+          by <span className="text-slate-700 bg-slate-100 px-1.5 rounded">{formatAddress(creator)}</span>
         </p>
 
-        <div className="space-y-3 mb-4">
+        <div className="space-y-4">
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-semibold text-gray-700">Progress</span>
-              <span className="text-sm font-bold text-blue-600">{progress.toFixed(0)}%</span>
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-2xl font-bold text-slate-900">{parseFloat(raised).toFixed(2)} <span className="text-sm font-medium text-slate-500">ETH</span></span>
+              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">{progress.toFixed(0)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
               <div
-                className="bg-linear-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all"
-                style={{ width: `${Math.min(progress, 100)}%` }}
+                className="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out"
+                style={{ width: `${progress}%` }}
               ></div>
             </div>
+            <div className="flex justify-between text-xs text-slate-500 mt-1">
+              <span>Raised</span>
+              <span>Goal: {parseFloat(goal).toFixed(2)} ETH</span>
+            </div>
           </div>
 
-          <div className="flex justify-between text-sm">
-            <div>
-              <p className="text-gray-500">Raised</p>
-              <p className="font-bold text-gray-900">{parseFloat(raised).toFixed(2)} ETH</p>
+          <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs font-medium text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-4 h-4 text-slate-400" />
+              {contributors} backers
             </div>
-            <div className="text-right">
-              <p className="text-gray-500">Goal</p>
-              <p className="font-bold text-gray-900">{parseFloat(goal).toFixed(2)} ETH</p>
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-slate-400" />
+              {timeLeft}
             </div>
           </div>
         </div>
-
-        <div className="flex gap-3 text-xs text-gray-600 mb-3 pb-3 border-b border-gray-100">
-          <div className="flex items-center gap-1">
-            <Users className="w-4 h-4" />
-            {contributors} backers
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            {timeLeft}
-          </div>
-        </div>
-
-        {goalReached && (
-          <div className="flex items-center gap-2 p-2 bg-green-50 rounded">
-            <Target className="w-4 h-4 text-green-600" />
-            <span className="text-xs font-semibold text-green-700">Goal Reached!</span>
-          </div>
-        )}
       </div>
-    </div>
+    </Card>
   );
 }

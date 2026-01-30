@@ -1,310 +1,172 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { ArrowRight, Zap, Heart, Lock } from "lucide-react";
+import { ArrowRight, Zap, Globe, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import FundCard from "../components/FundCard";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import { FACTORY_ABI, FACTORY_ADDRESS } from "../utils/contract";
-
-interface Fund {
-  address: string;
-  name: string;
-  goal: string;
-  raised: string;
-  creator: string;
-  deadline: number;
-  goalReached: boolean;
-  contributors: number;
-}
+import { FACTORY_ABI, FACTORY_ADDRESS, type FundData } from "../utils/contract";
+import { useWeb3 } from "../context/Web3Context";
 
 export default function Home() {
-  const [funds, setFunds] = useState<Fund[]>([]);
-  const [account, setAccount] = useState<string>();
+  const [funds, setFunds] = useState<FundData[]>([]);
+  const { provider } = useWeb3();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
+
+  // Fallback provider if wallet not connected, to read data
+  const getReadProvider = () => {
+    if (provider) return provider;
+    if (typeof window.ethereum !== 'undefined') {
+      return new ethers.BrowserProvider(window.ethereum);
+    }
+    return null;
+  }
 
   useEffect(() => {
     loadFunds();
-    checkAccount();
-    
-    // Listen for account changes
-    if (window.ethereum) {
-      const handleAccountsChanged = (accounts: unknown) => {
-        if (Array.isArray(accounts) && accounts.length > 0) {
-          setAccount(String(accounts[0]));
-        }
-      };
-      
-      window.ethereum.on("accountsChanged", handleAccountsChanged);
-      return () => {
-        if (window.ethereum) {
-          window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
-        }
-      };
-    }
-  }, []);
+  }, [provider]);
 
   const loadFunds = async () => {
+    const readProvider = getReadProvider();
+    if (!readProvider) return; // Can't read without provider (could use JsonRpcProvider for read-only in future)
+
     try {
       setLoading(true);
-      if (!window.ethereum) {
-        throw new Error("MetaMask not installed");
-      }
-      const provider = new ethers.BrowserProvider(window.ethereum);
       const factory = new ethers.Contract(
         FACTORY_ADDRESS,
         FACTORY_ABI,
-        provider
+        readProvider
       );
 
       const fundAddresses = await factory.getFunds();
-      
-      const fundData: Fund[] = [];
-      for (const address of fundAddresses) {
+      const fundData: FundData[] = [];
+
+      // Limit to 10 for now to avoid spamming RPC
+      for (const address of fundAddresses.slice(-10)) {
         try {
-          const fundDetails = await loadFundDetails(provider, address);
-          if (fundDetails) {
-            fundData.push(fundDetails);
-          }
+          const FUND_ABI_PARTIAL = [
+            "function creator() view returns (address)",
+            "function projectName() view returns (string)",
+            "function goal() view returns (uint256)",
+            "function deadline() view returns (uint256)",
+            "function totalRaised() view returns (uint256)",
+            "function goalReached() view returns (bool)",
+            "function contributorCount() view returns (uint256)",
+            "function requestCount() view returns (uint256)",
+          ];
+          const contract = new ethers.Contract(address, FUND_ABI_PARTIAL, readProvider);
+          const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
+            await Promise.all([
+              contract.creator(),
+              contract.projectName(),
+              contract.goal(),
+              contract.deadline(),
+              contract.totalRaised(),
+              contract.goalReached(),
+              contract.contributorCount(),
+              contract.requestCount()
+            ]);
+
+          fundData.push({
+            address,
+            creator,
+            projectName,
+            goal: ethers.formatEther(goal),
+            deadline: Number(deadline),
+            totalRaised: ethers.formatEther(totalRaised),
+            goalReached,
+            contributorCount: Number(contributorCount),
+            requestCount: Number(requestCount)
+          });
         } catch (err) {
           console.error(`Error loading fund ${address}:`, err);
         }
       }
-      
+
       setFunds(fundData.reverse());
-      setError(undefined);
     } catch (err) {
       console.error("Error loading funds:", err);
-      setError("Failed to load funds. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const loadFundDetails = async (
-    provider: ethers.BrowserProvider,
-    address: string
-  ): Promise<Fund | null> => {
-    try {
-      const FUND_ABI = [
-        "function creator() view returns (address)",
-        "function projectName() view returns (string)",
-        "function goal() view returns (uint256)",
-        "function deadline() view returns (uint256)",
-        "function totalRaised() view returns (uint256)",
-        "function goalReached() view returns (bool)",
-        "function contributorCount() view returns (uint256)",
-      ];
-
-      const contract = new ethers.Contract(address, FUND_ABI, provider);
-
-      const [creator, projectName, goal, deadline, totalRaised, goalReached, contributors] =
-        await Promise.all([
-          contract.creator(),
-          contract.projectName(),
-          contract.goal(),
-          contract.deadline(),
-          contract.totalRaised(),
-          contract.goalReached(),
-          contract.contributorCount(),
-        ]);
-
-      return {
-        address,
-        name: projectName,
-        goal: ethers.formatEther(goal),
-        raised: ethers.formatEther(totalRaised),
-        creator,
-        deadline: Number(deadline),
-        goalReached,
-        contributors: Number(contributors),
-      };
-    } catch (err) {
-      console.error(`Error loading details for ${address}:`, err);
-      return null;
-    }
-  };
-
-  const checkAccount = async () => {
-    if (!window.ethereum) return;
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-      if (Array.isArray(accounts) && accounts.length > 0) {
-        setAccount(String(accounts[0]));
-      }
-    } catch (err) {
-      console.error("Error checking account:", err);
-    }
-  };
-
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      alert("Please install MetaMask");
-      return;
-    }
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      if (Array.isArray(accounts) && accounts.length > 0) {
-        setAccount(String(accounts[0]));
-      }
-    } catch (err) {
-      console.error("Error connecting wallet:", err);
-    }
-  };
-
-  const disconnectWallet = () => {
-    setAccount(undefined);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header
-        account={account}
-        onConnect={connectWallet}
-        onDisconnect={disconnectWallet}
-      />
-
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-linear-to-r from-blue-600 to-indigo-700 text-white py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h1 className="text-5xl font-bold mb-6">
-                  Decentralized Crowdfunding
-                </h1>
-                <p className="text-lg text-blue-100 mb-8">
-                  Create funding campaigns and raise money with transparency. Every transaction is recorded on the blockchain.
-                </p>
-                <a
-                  href="/create"
-                  className="inline-flex items-center gap-2 bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition"
-                >
-                  Start a Campaign <ArrowRight className="w-5 h-5" />
-                </a>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-500 bg-opacity-50 rounded-lg p-6 backdrop-blur">
-                  <Zap className="w-8 h-8 mb-2" />
-                  <h3 className="font-bold mb-2">Instant Funding</h3>
-                  <p className="text-sm text-blue-100">Fast & secure transactions</p>
-                </div>
-                <div className="bg-blue-500 bg-opacity-50 rounded-lg p-6 backdrop-blur">
-                  <Heart className="w-8 h-8 mb-2" />
-                  <h3 className="font-bold mb-2">Community Driven</h3>
-                  <p className="text-sm text-blue-100">Democratic decisions</p>
-                </div>
-                <div className="bg-blue-500 bg-opacity-50 rounded-lg p-6 backdrop-blur">
-                  <Lock className="w-8 h-8 mb-2" />
-                  <h3 className="font-bold mb-2">Transparent</h3>
-                  <p className="text-sm text-blue-100">Blockchain verified</p>
-                </div>
-                <div className="bg-blue-500 bg-opacity-50 rounded-lg p-6 backdrop-blur">
-                  <Zap className="w-8 h-8 mb-2" />
-                  <h3 className="font-bold mb-2">No Middlemen</h3>
-                  <p className="text-sm text-blue-100">Direct connections</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Funds Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-2">
-              Active Campaigns
-            </h2>
-            <p className="text-gray-600">
-              Discover and support amazing projects
+    <div className="space-y-16 pb-16">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-3xl bg-indigo-600 text-white shadow-2xl">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-bl from-purple-500/30 to-transparent transform translate-x-1/4 skew-x-12"></div>
+        <div className="relative z-10 px-8 py-20 sm:px-12 lg:px-16 flex flex-col md:flex-row items-center gap-12">
+          <div className="flex-1 space-y-6">
+            <h1 className="text-5xl font-extrabold tracking-tight leading-tight">
+              Fund the Future, <br />
+              <span className="text-purple-200">Decentralized.</span>
+            </h1>
+            <p className="text-lg text-indigo-100 max-w-xl">
+              Launch your campaign on the blockchain. Transparent, secure, and unstoppable funding for your dreams.
             </p>
-          </div>
-
-          {error && (
-            <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              {error}
-            </div>
-          )}
-
-          {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin">
-                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"></div>
-              </div>
-            </div>
-          ) : funds.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-600 mb-4">No active campaigns yet.</p>
-              <a
-                href="/create"
-                className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-              >
-                Create the first campaign
-              </a>
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {funds.map((fund) => (
-                <FundCard
-                  key={fund.address}
-                  name={fund.name}
-                  goal={fund.goal}
-                  raised={fund.raised}
-                  creator={fund.creator}
-                  deadline={fund.deadline}
-                  goalReached={fund.goalReached}
-                  contributors={fund.contributors}
-                  onClick={() => {
-                    // Navigate to fund details
-                    window.location.href = `/fund/${fund.address}`;
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Stats Section */}
-        <section className="bg-gray-900 text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold text-blue-400 mb-2">
-                  {funds.length}
-                </div>
-                <div className="text-gray-400">Active Campaigns</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-400 mb-2">
-                  {funds.reduce((acc, f) => acc + f.contributors, 0)}
-                </div>
-                <div className="text-gray-400">Total Backers</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-400 mb-2">
-                  {funds
-                    .reduce((acc, f) => acc + parseFloat(f.raised), 0)
-                    .toFixed(2)}
-                </div>
-                <div className="text-gray-400">ETH Raised</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-blue-400 mb-2">
-                  {funds.filter((f) => f.goalReached).length}
-                </div>
-                <div className="text-gray-400">Goals Reached</div>
-              </div>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link to="/create" className="px-8 py-3.5 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-colors shadow-lg active:scale-95 flex items-center gap-2">
+                Start a Campaign <ArrowRight className="w-5 h-5" />
+              </Link>
+              <button onClick={() => {
+                document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' });
+              }} className="px-8 py-3.5 bg-indigo-700/50 text-white border border-indigo-400/30 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">
+                Explore Projects
+              </button>
             </div>
           </div>
-        </section>
-      </main>
 
-      <Footer />
+          {/* Feature Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
+            {[
+              { icon: Zap, label: "Instant Payouts", desc: "No waiting for banks." },
+              { icon: ShieldCheck, label: "Secure", desc: "Audited contracts." },
+              { icon: Globe, label: "Global", desc: "Anyone can donate." },
+            ].map((feat, i) => (
+              <div key={i} className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl">
+                <feat.icon className="w-6 h-6 text-purple-200 mb-2" />
+                <div className="font-bold text-sm">{feat.label}</div>
+                <div className="text-xs text-indigo-200">{feat.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Funds List */}
+      <section id="explore">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-slate-900">Trending Campaigns</h2>
+        </div>
+
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-80 bg-slate-100 rounded-2xl animate-pulse"></div>
+            ))}
+          </div>
+        ) : funds.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {funds.map(fund => (
+              <FundCard
+                key={fund.address}
+                name={fund.projectName}
+                goal={fund.goal}
+                raised={fund.totalRaised}
+                creator={fund.creator}
+                deadline={fund.deadline}
+                goalReached={fund.goalReached}
+                contributors={fund.contributorCount}
+                onClick={() => window.location.href = `/fund/${fund.address}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
+            <p className="text-slate-500 mb-4">No campaigns found. Be the first!</p>
+            <Link to="/create" className="text-indigo-600 font-bold hover:underline">Launch a campaign &rarr;</Link>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
-

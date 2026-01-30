@@ -1,16 +1,24 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Web3Provider } from "./context/Web3Context";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import CreateFund from "./pages/CreateFund";
 import MyFunds from "./pages/MyFunds";
+import FundDetails from "./pages/FundDetails";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/create" element={<CreateFund />} />
-        <Route path="/my-funds" element={<MyFunds />} />
-      </Routes>
-    </BrowserRouter>
+    <Web3Provider>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<CreateFund />} />
+            <Route path="/my-funds" element={<MyFunds />} />
+            <Route path="/fund/:address" element={<FundDetails />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </Web3Provider>
   );
 }

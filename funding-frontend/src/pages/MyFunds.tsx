@@ -1,95 +1,118 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import { ethers } from "ethers";
+import { Link } from "react-router-dom";
+import { useWeb3 } from "../context/Web3Context";
+import FundCard from "../components/FundCard";
+import { FACTORY_ABI, FACTORY_ADDRESS, type FundData } from "../utils/contract";
 
 export default function MyFunds() {
-  const navigate = useNavigate();
-  const [account, setAccount] = useState<string>();
+  const { account, provider } = useWeb3();
+  const [funds, setFunds] = useState<FundData[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    checkAccount();
-  }, []);
+    if (account && provider) {
+      loadMyFunds();
+    }
+  }, [account, provider]);
 
-  const checkAccount = async () => {
-    if (!window.ethereum) return;
+  const loadMyFunds = async () => {
+    if (!provider || !account) return;
     try {
-      const accounts = await window.ethereum.request({
-        method: "eth_accounts",
-      });
-      if (Array.isArray(accounts) && accounts.length > 0) {
-        setAccount(String(accounts[0]));
+      setLoading(true);
+      const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
+
+      const fundAddresses = await factory.getFunds();
+      const myFunds: FundData[] = [];
+
+      for (const address of fundAddresses) {
+        try {
+          const FUND_ABI_PARTIAL = [
+            "function creator() view returns (address)",
+            "function projectName() view returns (string)",
+            "function goal() view returns (uint256)",
+            "function deadline() view returns (uint256)",
+            "function totalRaised() view returns (uint256)",
+            "function goalReached() view returns (bool)",
+            "function contributorCount() view returns (uint256)",
+          ];
+          const contract = new ethers.Contract(address, FUND_ABI_PARTIAL, provider);
+          const creator = await contract.creator();
+
+          if (creator.toLowerCase() === account.toLowerCase()) {
+            const [projectName, goal, deadline, totalRaised, goalReached, contributorCount] =
+              await Promise.all([
+                contract.projectName(),
+                contract.goal(),
+                contract.deadline(),
+                contract.totalRaised(),
+                contract.goalReached(),
+                contract.contributorCount(),
+              ]);
+
+            myFunds.push({
+              address,
+              creator,
+              projectName,
+              goal: ethers.formatEther(goal),
+              deadline: Number(deadline),
+              totalRaised: ethers.formatEther(totalRaised),
+              goalReached,
+              contributorCount: Number(contributorCount),
+              requestCount: 0 // Not needed for card
+            });
+          }
+        } catch (err) {
+          console.error(`Error loading fund ${address}:`, err);
+        }
       }
+      setFunds(myFunds.reverse());
     } catch (err) {
-      console.error("Error checking account:", err);
+      console.error("Error loading my funds:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      alert("Please install MetaMask");
-      return;
-    }
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      if (Array.isArray(accounts) && accounts.length > 0) {
-        setAccount(String(accounts[0]));
-      }
-    } catch (err) {
-      console.error("Error connecting wallet:", err);
-    }
-  };
-
-  const disconnectWallet = () => {
-    setAccount(undefined);
-  };
+  if (!account) {
+    return (
+      <div className="text-center py-20">
+        <h2 className="text-2xl font-bold mb-4">Please connect your wallet</h2>
+        <p className="text-slate-500">You need to connect your wallet to view your campaigns.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header
-        account={account}
-        onConnect={connectWallet}
-        onDisconnect={disconnectWallet}
-      />
+    <div>
+      <h1 className="text-3xl font-extrabold text-slate-900 mb-8">My Campaigns</h1>
 
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-8 font-medium transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back to Home
-          </button>
-
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">My Campaigns</h1>
-
-          {!account ? (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center border border-gray-100">
-              <p className="text-gray-600 mb-6">
-                Connect your wallet to view your campaigns
-              </p>
-              <button
-                onClick={connectWallet}
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-              >
-                Connect Wallet
-              </button>
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center border border-gray-100">
-              <p className="text-gray-600">
-                No campaigns found for your account. Create one to get started!
-              </p>
-            </div>
-          )}
+      {loading ? (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2].map(i => <div key={i} className="h-80 bg-slate-100 rounded-2xl animate-pulse"></div>)}
         </div>
-      </main>
-
-      <Footer />
+      ) : funds.length > 0 ? (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {funds.map(fund => (
+            <FundCard
+              key={fund.address}
+              name={fund.projectName}
+              goal={fund.goal}
+              raised={fund.totalRaised}
+              creator={fund.creator}
+              deadline={fund.deadline}
+              goalReached={fund.goalReached}
+              contributors={fund.contributorCount}
+              onClick={() => window.location.href = `/fund/${fund.address}`}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
+          <p className="text-slate-500 mb-4">You haven't created any campaigns yet.</p>
+          <Link to="/create" className="text-indigo-600 font-bold hover:underline">Start your first campaign &rarr;</Link>
+        </div>
+      )}
     </div>
   );
 }
