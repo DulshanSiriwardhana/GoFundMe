@@ -1,3 +1,9 @@
+@import "@fontsource/spectral/300.css";
+@import "@fontsource/spectral/400.css";
+@import "@fontsource/spectral/500.css";
+@import "@fontsource/spectral/600.css";
+@import "@fontsource/spectral/700.css";
+@import "@fontsource/spectral/800.css";
 @import "tailwindcss";
 
 @theme {
@@ -5,61 +11,23 @@
   --font-spectral: "Spectral", serif;
 }
 
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Spectral';
-  src: url('/fonts/Spectral-ExtraBold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-}
-
-/* Force Spectral font globally */
-html,
-body,
-*,
-::before,
-::after {
-  font-family: 'Spectral', serif !important;
-}
-
 html,
 body {
   background-color: #022c22;
   color: #ffffff;
+  font-family: 'Spectral', serif !important;
+}
+
+/* Ensure all form elements also use Spectral */
+input,
+button,
+select,
+textarea {
+  font-family: 'Spectral', serif !important;
+}
+
+* {
+  font-family: inherit;
 }
 
 @keyframes slide-in {

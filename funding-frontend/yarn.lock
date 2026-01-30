@@ -243,6 +243,11 @@
     "@eslint/core" "^0.17.0"
     levn "^0.4.1"
 
+"@fontsource/spectral@^5.2.8":
+  version "5.2.8"
+  resolved "https://registry.npmjs.org/@fontsource/spectral/-/spectral-5.2.8.tgz"
+  integrity sha512-0CqZ8/z8A38BdeSz5t2NSd5tCO1R9P1k7SF2VpRLMbZTMSSR6+2Dk0ZBMfEQK/IrBLQS1HgHLMqpdTwRpnKpGQ==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"

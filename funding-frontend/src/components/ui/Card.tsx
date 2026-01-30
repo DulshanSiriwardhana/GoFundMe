@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 interface CardProps {
     children: ReactNode;
@@ -10,7 +10,7 @@ export function Card({ children, className = "", onClick }: CardProps) {
     return (
         <div
             onClick={onClick}
-            className={`bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-6 ${className}`}
+            className={`bg-emerald-900/40 backdrop-blur-md border border-emerald-500/20 rounded-2xl shadow-xl transition-all duration-300 ${className}`}
         >
             {children}
         </div>
