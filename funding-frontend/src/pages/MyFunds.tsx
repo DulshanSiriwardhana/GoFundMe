@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
 import FundCard from "../components/FundCard";
 import { FACTORY_ABI, FACTORY_ADDRESS, type FundData } from "../utils/contract";
+import { Plus } from "lucide-react";
 
 export default function MyFunds() {
+  const navigate = useNavigate();
   const { account, provider } = useWeb3();
   const [funds, setFunds] = useState<FundData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -84,34 +86,57 @@ export default function MyFunds() {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-extrabold text-slate-900 mb-8">My Campaigns</h1>
+    <div className="space-y-12 pb-12">
+      <div className="bg-emerald-900 border border-emerald-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-linear-to-bl from-emerald-600/10 to-transparent transform translate-x-1/4"></div>
+        <div className="relative z-10">
+          <h1 className="text-4xl font-extrabold text-white mb-4">My Campaigns</h1>
+          <p className="text-emerald-200/80 text-lg max-w-2xl">
+            Manage your fundraising campaigns and track your progress on the blockchain.
+          </p>
+        </div>
+      </div>
 
       {loading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2].map(i => <div key={i} className="h-80 bg-slate-100 rounded-2xl animate-pulse"></div>)}
+          {[1, 2].map(i => (
+            <div key={i} className="h-80 bg-emerald-900/30 border border-emerald-800 rounded-2xl animate-pulse"></div>
+          ))}
         </div>
       ) : funds.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {funds.map(fund => (
-            <FundCard
-              key={fund.address}
-              name={fund.projectName}
-              goal={fund.goal}
-              raised={fund.totalRaised}
-              creator={fund.creator}
-              deadline={fund.deadline}
-              contributors={fund.contributorCount}
-              onClick={() => window.location.href = `/fund/${fund.address}`}
-            />
+            <div key={fund.address} className="relative group">
+              <FundCard
+                name={fund.projectName}
+                goal={fund.goal}
+                raised={fund.totalRaised}
+                creator={fund.creator}
+                deadline={fund.deadline}
+                contributors={fund.contributorCount}
+                onClick={() => navigate(`/fund/${fund.address}`)}
+              />
+            </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
-          <p className="text-slate-500 mb-4">You haven't created any campaigns yet.</p>
-          <Link to="/create" className="text-indigo-600 font-bold hover:underline">Start your first campaign &rarr;</Link>
+        <div className="text-center py-20 bg-emerald-900/20 rounded-3xl border border-dashed border-emerald-800">
+          <div className="w-16 h-16 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Plus className="w-8 h-8 text-emerald-400" />
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">No campaigns yet</h3>
+          <p className="text-emerald-400/60 mb-8 max-w-md mx-auto">
+            You haven't created any campaigns yet. Start your journey today!
+          </p>
+          <button
+            onClick={() => navigate('/create')}
+            className="px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98]"
+          >
+            Create your first Campaign
+          </button>
         </div>
       )}
     </div>
   );
 }
+

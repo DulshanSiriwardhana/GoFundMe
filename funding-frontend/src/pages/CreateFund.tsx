@@ -2,9 +2,9 @@ import { useState } from "react";
 import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
-import { Card } from "../components/ui/Card";
+
 import { FACTORY_ADDRESS, FACTORY_ABI } from "../utils/contract";
-import { Rocket, Calendar, Target, AlertTriangle } from "lucide-react";
+import { ArrowRight, Calendar, Target, AlertCircle, Type } from "lucide-react";
 
 export default function CreateFund() {
   const navigate = useNavigate();
@@ -52,86 +52,89 @@ export default function CreateFund() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Start your Campaign</h1>
-        <p className="text-slate-600">Tell your story and start raising funds on the blockchain.</p>
-      </div>
+    <div className="max-w-xl mx-auto py-12">
+      <div className="bg-emerald-950 border border-emerald-800 rounded-3xl p-8 shadow-2xl">
+        <h2 className="text-3xl font-extrabold mb-8 text-center text-white">
+          Launch Your <span className="text-emerald-400">Campaign</span>
+        </h2>
 
-      <Card>
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-start gap-2">
-            <AlertTriangle className="w-5 h-5 shrink-0" />
-            <span>{error}</span>
+          <div className="bg-red-900/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm font-medium">{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Campaign Title</label>
-            <input
-              required
-              type="text"
-              className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-              placeholder="e.g. Community Garden Project"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            />
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-emerald-200">Campaign Name</label>
+            <div className="relative group">
+              <input
+                type="text"
+                required
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                placeholder="e.g. Community Garden"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+              <Type className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
+            </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1">
-                <Target className="w-4 h-4 text-slate-400" /> goal Amount (ETH)
-              </label>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-emerald-200">Funding Goal (ETH)</label>
+            <div className="relative group">
               <input
-                required
                 type="number"
                 step="0.001"
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                required
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                 placeholder="10.0"
                 value={formData.goal}
                 onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
               />
+              <Target className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-slate-400" /> Duration (Days)
-              </label>
-              <select
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-emerald-200">Duration (Days)</label>
+            <div className="relative group">
+              <input
+                type="number"
+                min="1"
+                max="365"
+                required
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                placeholder="30"
                 value={formData.duration}
                 onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              >
-                <option value="7">7 Days</option>
-                <option value="30">30 Days</option>
-                <option value="60">60 Days</option>
-                <option value="90">90 Days</option>
-              </select>
+              />
+              <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
             </div>
           </div>
 
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                "Creating Contract..."
-              ) : (
-                <>
-                  <Rocket className="w-5 h-5" /> Launch Campaign
-                </>
-              )}
-            </button>
-            <p className="text-center text-xs text-slate-400 mt-4">
-              By launching, you are deploying a immutable smart contract. Gas fees apply.
-            </p>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-8"
+          >
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                Create Campaign <ArrowRight className="w-5 h-5" />
+              </>
+            )}
+          </button>
         </form>
-      </Card>
+      </div>
+      <p className="text-center text-xs text-slate-400 mt-4">
+        By launching, you are deploying a immutable smart contract. Gas fees apply.
+      </p>
     </div>
   );
 }

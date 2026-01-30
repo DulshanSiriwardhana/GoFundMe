@@ -22,6 +22,7 @@ export default function FundCard({
 }: FundCardProps) {
   const progress = Math.min((parseFloat(raised) / parseFloat(goal)) * 100, 100);
   const timeLeft = new Date(deadline * 1000).toLocaleDateString();
+  // eslint-disable-next-line react-hooks/purity
   const isActive = deadline * 1000 > Date.now();
 
   const formatAddress = (addr: string) => `${addr?.slice(0, 6)}...${addr?.slice(-4)}`;
