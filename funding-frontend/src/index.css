@@ -45,3 +45,29 @@ textarea {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+  /* Very dark background to match the theme */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #064e3b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #064e3b #020617;
+}
