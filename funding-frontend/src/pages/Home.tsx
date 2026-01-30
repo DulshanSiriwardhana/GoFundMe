@@ -97,7 +97,7 @@ export default function Home() {
               Fund the Future, <br />
               <span className="text-emerald-400">Decentralized.</span>
             </h1>
-            <p className="text-lg text-emerald-100/80 max-w-xl">
+            <p className="text-lg text-emerald-100 max-w-xl">
               Launch your campaign on the blockchain. Transparent, secure, and unstoppable funding for your dreams.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -106,7 +106,7 @@ export default function Home() {
               </Link>
               <button onClick={() => {
                 document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' });
-              }} className="px-8 py-3.5 bg-emerald-950/50 text-emerald-100 border border-emerald-500/30 rounded-xl font-semibold hover:bg-emerald-900/80 transition-colors">
+              }} className="px-8 py-3.5 bg-emerald-900/60 text-white border-2 border-emerald-500/50 rounded-xl font-bold hover:bg-emerald-800/80 hover:border-emerald-400 transition-colors">
                 Explore Projects
               </button>
             </div>
@@ -121,7 +121,7 @@ export default function Home() {
               <div key={i} className="bg-emerald-950/40 backdrop-blur-md border border-emerald-500/20 p-4 rounded-2xl hover:border-emerald-500/40 transition-colors">
                 <feat.icon className="w-6 h-6 text-emerald-400 mb-2" />
                 <div className="font-bold text-sm text-white">{feat.label}</div>
-                <div className="text-xs text-emerald-200/60">{feat.desc}</div>
+                <div className="text-xs text-emerald-200">{feat.desc}</div>
               </div>
             ))}
           </div>
@@ -155,9 +155,9 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-emerald-900/20 rounded-3xl border border-dashed border-emerald-800">
-            <p className="text-emerald-400/60 mb-4">No campaigns found. Be the first!</p>
-            <Link to="/create" className="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Launch a campaign &rarr;</Link>
+          <div className="text-center py-20 bg-emerald-900/20 rounded-3xl border-2 border-dashed border-emerald-700">
+            <p className="text-emerald-100 mb-4 text-lg font-medium">No campaigns found. Be the first!</p>
+            <Link to="/create" className="text-emerald-300 font-bold hover:text-emerald-200 hover:underline text-lg">Launch a campaign &rarr;</Link>
           </div>
         )}
       </section>

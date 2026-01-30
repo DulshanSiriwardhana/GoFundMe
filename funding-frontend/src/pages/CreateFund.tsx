@@ -5,6 +5,7 @@ import { useWeb3 } from "../context/Web3Context";
 
 import { FACTORY_ADDRESS, FACTORY_ABI } from "../utils/contract";
 import { ArrowRight, Calendar, Target, AlertCircle, Type } from "lucide-react";
+import Toast, { type ToastType } from "../components/Toast";
 
 export default function CreateFund() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function CreateFund() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ type: ToastType; message: string } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +40,8 @@ export default function CreateFund() {
 
       await tx.wait();
 
-      navigate("/");
+      setToast({ type: "success", message: "Campaign created successfully!" });
+      setTimeout(() => navigate("/"), 2000);
     } catch (err: unknown) {
       console.error(err);
       let message = "Failed to create fund.";
@@ -67,50 +70,50 @@ export default function CreateFund() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-emerald-200">Campaign Name</label>
+            <label className="text-sm font-semibold text-white">Campaign Name</label>
             <div className="relative group">
               <input
                 type="text"
                 required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                 placeholder="e.g. Community Garden"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
-              <Type className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
+              <Type className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-emerald-200">Funding Goal (ETH)</label>
+            <label className="text-sm font-semibold text-white">Funding Goal (ETH)</label>
             <div className="relative group">
               <input
                 type="number"
                 step="0.001"
                 required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                 placeholder="10.0"
                 value={formData.goal}
                 onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
               />
-              <Target className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
+              <Target className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-emerald-200">Duration (Days)</label>
+            <label className="text-sm font-semibold text-white">Duration (Days)</label>
             <div className="relative group">
               <input
                 type="number"
                 min="1"
                 max="365"
                 required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                 placeholder="30"
                 value={formData.duration}
                 onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
               />
-              <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-600 group-hover:text-emerald-500 transition-colors" />
+              <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
             </div>
           </div>
 
@@ -132,9 +135,16 @@ export default function CreateFund() {
           </button>
         </form>
       </div>
-      <p className="text-center text-xs text-slate-400 mt-4">
+      <p className="text-center text-xs text-emerald-300 mt-4">
         By launching, you are deploying a immutable smart contract. Gas fees apply.
       </p>
+      {toast && (
+        <Toast
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

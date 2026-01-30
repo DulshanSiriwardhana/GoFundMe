@@ -79,8 +79,8 @@ export default function MyFunds() {
   if (!account) {
     return (
       <div className="text-center py-20">
-        <h2 className="text-2xl font-bold mb-4">Please connect your wallet</h2>
-        <p className="text-slate-500">You need to connect your wallet to view your campaigns.</p>
+        <h2 className="text-2xl font-bold mb-4 text-white">Please connect your wallet</h2>
+        <p className="text-emerald-200">You need to connect your wallet to view your campaigns.</p>
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default function MyFunds() {
             <Plus className="w-8 h-8 text-emerald-400" />
           </div>
           <h3 className="text-xl font-bold text-white mb-2">No campaigns yet</h3>
-          <p className="text-emerald-400/60 mb-8 max-w-md mx-auto">
+          <p className="text-emerald-100 mb-8 max-w-md mx-auto">
             You haven't created any campaigns yet. Start your journey today!
           </p>
           <button

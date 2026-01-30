@@ -37,8 +37,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                                     key={link.path}
                                     to={link.path}
                                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${location.pathname === link.path
-                                        ? "text-emerald-400"
-                                        : "text-emerald-200/70 hover:text-emerald-400"
+                                        ? "text-emerald-300"
+                                        : "text-emerald-100 hover:text-emerald-300"
                                         }`}
                                 >
                                     {link.icon}
@@ -49,14 +49,14 @@ export default function Layout({ children }: { children: ReactNode }) {
 
                         <div className="hidden md:flex items-center gap-4">
                             {account ? (
-                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-900/50 text-emerald-100 rounded-full text-sm font-semibold border border-emerald-500/30 shadow-sm">
-                                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-800/80 text-white rounded-full text-sm font-semibold border border-emerald-600 shadow-lg">
+                                    <div className="w-2 h-2 bg-emerald-300 rounded-full animate-pulse shadow-[0_0_10px_rgba(110,231,183,0.6)]" />
                                     {formatAddress(account)}
                                 </div>
                             ) : (
                                 <button
                                     onClick={connectWallet}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-sm font-semibold shadow-lg shadow-emerald-900/20 transition-all active:scale-95 border border-emerald-500/20"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full text-sm font-bold shadow-lg shadow-emerald-500/30 transition-all active:scale-95 border border-emerald-400/30"
                                 >
                                     <Wallet className="w-4 h-4" />
                                     Connect Wallet
@@ -80,8 +80,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                                 to={link.path}
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`flex items-center gap-2 text-base font-medium transition-colors ${location.pathname === link.path
-                                    ? "text-emerald-400"
-                                    : "text-emerald-200 hover:text-emerald-400"
+                                    ? "text-emerald-300"
+                                    : "text-white hover:text-emerald-300"
                                     }`}
                             >
                                 {link.icon}
@@ -90,8 +90,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                         ))}
                         <div className="pt-2 border-t border-emerald-800">
                             {account ? (
-                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-800 text-emerald-100 rounded-lg text-sm font-semibold">
-                                    <div className="w-2 h-2 bg-emerald-400 rounded-full" />
+                                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-800 text-white rounded-lg text-sm font-semibold border border-emerald-600">
+                                    <div className="w-2 h-2 bg-emerald-300 rounded-full animate-pulse" />
                                     {formatAddress(account)}
                                 </div>
                             ) : (
@@ -100,7 +100,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                                         connectWallet();
                                         setIsMobileMenuOpen(false);
                                     }}
-                                    className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold shadow-md active:scale-95"
+                                    className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/30 active:scale-95"
                                 >
                                     <Wallet className="w-4 h-4" />
                                     Connect Wallet
