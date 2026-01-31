@@ -1,15 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
-import { ArrowRight, Zap, Globe, ShieldCheck } from "lucide-react";
+import { ArrowRight, Zap, Globe, ShieldCheck, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import FundCard from "../components/FundCard";
 import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { useWeb3 } from "../context/Web3Context";
 
+const CATEGORIES = ["All", "Tech", "Charity", "Creative", "Community", "Environment"];
+
 export default function Home() {
   const [funds, setFunds] = useState<FundData[]>([]);
   const { provider } = useWeb3();
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
 
   const getReadProvider = useCallback(() => {
     if (provider) return provider;
@@ -19,21 +23,16 @@ export default function Home() {
     return null;
   }, [provider]);
 
-  const loadFunds = useCallback(async () => {
+  const loadFundsFromBlockchain = useCallback(async () => {
     const readProvider = getReadProvider();
-    if (!readProvider) return;
+    if (!readProvider) return [];
 
     try {
-      setLoading(true);
-      const factory = new ethers.Contract(
-        FACTORY_ADDRESS,
-        FACTORY_ABI,
-        readProvider
-      );
-
+      const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, readProvider);
       const fundAddresses = await factory.getFunds();
       const fundData: FundData[] = [];
 
+      // Only take last 10 for performance in blockchain-direct mode
       for (const address of fundAddresses.slice(-10)) {
         try {
           const contract = new ethers.Contract(address, FUND_ABI, readProvider);
@@ -64,18 +63,48 @@ export default function Home() {
           console.error(`Error loading fund ${address}:`, err);
         }
       }
-
-      setFunds(fundData.reverse());
+      return fundData.reverse();
     } catch (err) {
-      console.error("Error loading funds:", err);
+      console.error("Blockchain fetch failed:", err);
+      return [];
+    }
+  }, [getReadProvider]);
+
+  const loadFunds = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Try backend first
+      const response = await fetch(`http://localhost:3001/api/funds?search=${searchQuery}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFunds(data.funds);
+      } else {
+        throw new Error("Backend unavailable");
+      }
+    } catch (err) {
+      console.warn("Falling back to blockchain-direct fetch...");
+      const blockchainFunds = await loadFundsFromBlockchain();
+      setFunds(blockchainFunds);
     } finally {
       setLoading(false);
     }
-  }, [getReadProvider]);
+  }, [searchQuery, loadFundsFromBlockchain]);
 
   useEffect(() => {
     loadFunds();
   }, [loadFunds]);
+
+  const filteredFunds = useMemo(() => {
+    // Simple frontend filtering for categories since we don't have them in contract yet
+    // In a real app, categories would be indexed in DB
+    return funds.filter(fund => {
+      const name = fund.projectName || "";
+      const addr = fund.address || "";
+      const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        addr.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    });
+  }, [funds, searchQuery]);
 
   return (
     <div className="space-y-20 pb-20">
@@ -105,7 +134,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full md:w-auto relative group">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full md:w-auto relative group" title="Our Features">
             <div className="absolute -inset-4 bg-emerald-400/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
             {[
               { icon: Zap, label: "Instant Payouts", desc: "No waiting for banks." },
@@ -122,12 +151,49 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="explore">
-        <div className="flex items-center justify-between mb-12">
-          <div className="space-y-2">
-            <h2 className="text-4xl font-black text-emerald-950 tracking-tight">Trending Campaigns</h2>
-            <div className="h-1 w-20 bg-emerald-500 rounded-full" />
+      <section id="explore" className="space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-4xl font-black text-emerald-950 tracking-tight">Trending Campaigns</h2>
+              <div className="h-1 w-20 bg-emerald-500 rounded-full" />
+            </div>
+            <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">
+              Discover groundbreaking projects on the chain
+            </p>
           </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:max-w-2xl">
+            <div className="relative flex-1 group">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
+              <input
+                type="text"
+                placeholder="Search campaigns or addresses..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-14 pr-6 py-4 bg-white border-2 border-emerald-50 rounded-2xl focus:border-emerald-500 focus:outline-none shadow-lg shadow-emerald-900/5 transition-all text-emerald-950 font-medium placeholder:text-emerald-900/20"
+              />
+            </div>
+            <button className="px-6 py-4 bg-white border-2 border-emerald-50 text-emerald-950 rounded-2xl font-bold flex items-center justify-center gap-3 hover:border-emerald-500 transition-all shadow-lg shadow-emerald-900/5 active:scale-95 group">
+              <Filter className="w-5 h-5 text-emerald-400 group-hover:text-emerald-600 transition-colors" />
+              Filters
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3 pb-4 overflow-x-auto no-scrollbar">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-6 py-2.5 rounded-full text-sm font-black tracking-tight transition-all border-2 whitespace-nowrap active:scale-95 ${activeCategory === cat
+                ? "bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/30"
+                : "bg-white border-emerald-50 text-emerald-900/40 hover:border-emerald-200"
+                }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {loading ? (
@@ -136,9 +202,9 @@ export default function Home() {
               <div key={i} className="h-96 bg-white border border-emerald-50 rounded-[2rem] animate-pulse"></div>
             ))}
           </div>
-        ) : funds.length > 0 ? (
+        ) : filteredFunds.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {funds.map(fund => (
+            {filteredFunds.map(fund => (
               <FundCard
                 key={fund.address}
                 name={fund.projectName}
@@ -158,11 +224,13 @@ export default function Home() {
             </div>
             <h3 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">No campaigns found</h3>
             <p className="text-emerald-900/40 mb-10 max-w-sm mx-auto font-bold uppercase tracking-widest text-xs leading-relaxed">
-              The blockchain is waiting for the next big idea. Be the first to launch!
+              {searchQuery ? "No results match your search query." : "The blockchain is waiting for the next big idea. Be the first to launch!"}
             </p>
-            <Link to="/create" className="inline-flex items-center gap-2 px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg">
-              Launch a campaign <ArrowRight className="w-6 h-6" />
-            </Link>
+            {!searchQuery && (
+              <Link to="/create" className="inline-flex items-center gap-2 px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg">
+                Launch a campaign <ArrowRight className="w-6 h-6" />
+              </Link>
+            )}
           </div>
         )}
       </section>

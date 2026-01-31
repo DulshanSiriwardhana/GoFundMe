@@ -2,12 +2,15 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
-import { ethers } from "ethers";
+import mongoose from "mongoose";
+import { startIndexer } from "./indexer.js";
+import { Fund } from "./models/Fund.js";
 
 dotenv.config();
 
 const app: Express = express();
 const PORT = process.env.PORT || 3001;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/gofundme";
 
 // Middleware
 app.use(helmet());
@@ -20,8 +23,13 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// Types
-// Interface Fund is used as a type definition for documentation purposes
+// Database Connection & Indexer Startup
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+    startIndexer();
+  })
+  .catch(err => console.error("MongoDB connection error:", err));
 
 // Routes
 
@@ -37,200 +45,50 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 /**
- * API Info
+ * Get All Funds with Search and Filtering
  */
-app.get("/api/info", (_req: Request, res: Response) => {
-  res.json({
-    name: "GoFundMe Backend API",
-    version: "1.0.0",
-    description: "Decentralized Crowdfunding Platform API",
-    endpoints: {
-      health: "/health",
-      chains: "/api/chains",
-      funds: "/api/funds",
-      fund: "/api/funds/:address",
-      validate: "/api/validate/address",
-    },
-  });
-});
-
-/**
- * Get Supported Chains
- */
-app.get("/api/chains", (_req: Request, res: Response) => {
-  res.json({
-    chains: [
-      {
-        id: 1,
-        name: "Ethereum Mainnet",
-        rpcUrl: process.env.ETHEREUM_RPC_URL || "https://eth.llamarpc.com",
-        blockExplorer: "https://etherscan.io",
-      },
-      {
-        id: 11155111,
-        name: "Sepolia Testnet",
-        rpcUrl: process.env.SEPOLIA_RPC_URL || "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
-        blockExplorer: "https://sepolia.etherscan.io",
-      },
-      {
-        id: 31337,
-        name: "Localhost",
-        rpcUrl: "http://localhost:8545",
-        blockExplorer: "N/A",
-      },
-    ],
-  });
-});
-
-/**
- * Validate Ethereum Address
- */
-app.post("/api/validate/address", (req: Request, res: Response) => {
+app.get("/api/funds", async (req: Request, res: Response) => {
   try {
-    const { address } = req.body;
+    const { search, sortBy = "createdAt", order = "desc" } = req.query;
 
-    if (!address) {
-      res.status(400).json({ error: "Address is required" });
-      return;
+    let query: any = {};
+    if (search) {
+      query.$or = [
+        { projectName: { $regex: search, $options: "i" } },
+        { address: { $regex: search, $options: "i" } }
+      ];
     }
 
-    const isValid = ethers.isAddress(address);
-    const checksumAddress = isValid ? ethers.getAddress(address) : null;
+    const sortOptions: any = {};
+    sortOptions[sortBy as string] = order === "desc" ? -1 : 1;
+
+    const funds = await Fund.find(query).sort(sortOptions);
 
     res.json({
-      address,
-      isValid,
-      checksumAddress,
-      isContract: null, // Would need RPC call to determine
+      funds,
+      total: funds.length
     });
   } catch (error) {
-    res.status(500).json({ error: "Invalid request" });
-    return;
+    res.status(500).json({ error: "Failed to fetch funds" });
   }
-});
-
-/**
- * Get All Funds (Cached from contract events)
- */
-app.get("/api/funds", (_req: Request, res: Response) => {
-  // This would typically fetch from MongoDB cache
-  // which is populated by indexing contract events
-  res.json({
-    funds: [],
-    total: 0,
-    message: "Fund data should be indexed from blockchain events",
-  });
 });
 
 /**
  * Get Fund Details
  */
-app.get("/api/funds/:address", (req: Request, res: Response) => {
+app.get("/api/funds/:address", async (req: Request, res: Response) => {
   try {
     const { address } = req.params;
+    const fund = await Fund.findOne({ address });
 
-    if (!ethers.isAddress(address)) {
-      res.status(400).json({ error: "Invalid address" });
+    if (!fund) {
+      res.status(404).json({ error: "Fund not found" });
       return;
     }
 
-    // This would fetch from MongoDB or call contract directly
-    res.json({
-      address,
-      message: "Fund details would be fetched from contract",
-    });
+    res.json(fund);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch fund details" });
-    return;
-  }
-});
-
-/**
- * Convert ETH to USD (Optional price feed)
- */
-app.get("/api/price/eth-usd", async (_req: Request, res: Response) => {
-  try {
-    // This could call a price oracle API
-    res.json({
-      eth: {
-        usd: 2345.67, // Placeholder
-        change24h: 5.23,
-      },
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch price" });
-    return;
-  }
-});
-
-/**
- * Get Fund Activity/History
- */
-app.get("/api/funds/:address/activity", (req: Request, res: Response) => {
-  try {
-    const { address } = req.params;
-
-    if (!ethers.isAddress(address)) {
-      res.status(400).json({ error: "Invalid address" });
-      return;
-    }
-
-    res.json({
-      address,
-      activity: [],
-      message: "Activity would be indexed from blockchain events",
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch activity" });
-    return;
-  }
-});
-
-/**
- * Get Contribution History
- */
-app.get("/api/funds/:address/contributors/:contributor", (req: Request, res: Response) => {
-  try {
-    const { address, contributor } = req.params;
-
-    if (!ethers.isAddress(address) || !ethers.isAddress(contributor)) {
-      res.status(400).json({ error: "Invalid address" });
-      return;
-    }
-
-    res.json({
-      address,
-      contributor,
-      contributions: [],
-      totalContributed: "0",
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch contributions" });
-    return;
-  }
-});
-
-/**
- * Get Withdrawal Requests
- */
-app.get("/api/funds/:address/requests", (req: Request, res: Response) => {
-  try {
-    const { address } = req.params;
-
-    if (!ethers.isAddress(address)) {
-      res.status(400).json({ error: "Invalid address" });
-      return;
-    }
-
-    res.json({
-      address,
-      requests: [],
-      message: "Requests would be fetched from contract",
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch requests" });
-    return;
   }
 });
 
@@ -256,7 +114,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 app.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════╗
-║   GoFundMe Backend API                ║
+║   GoFundChain Backend API             ║
 ║   Running on http://localhost:${PORT}      ║
 ║   Environment: ${process.env.NODE_ENV || "development"}              ║
 ╚═══════════════════════════════════════╝
