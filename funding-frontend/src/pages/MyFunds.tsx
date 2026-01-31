@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
 import FundCard from "../components/FundCard";
-import { FACTORY_ABI, FACTORY_ADDRESS, type FundData } from "../utils/contract";
+import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { Plus } from "lucide-react";
 
 export default function MyFunds() {
@@ -23,16 +23,7 @@ export default function MyFunds() {
 
       for (const address of fundAddresses) {
         try {
-          const FUND_ABI_PARTIAL = [
-            "function creator() view returns (address)",
-            "function projectName() view returns (string)",
-            "function goal() view returns (uint256)",
-            "function deadline() view returns (uint256)",
-            "function totalRaised() view returns (uint256)",
-            "function goalReached() view returns (bool)",
-            "function contributorCount() view returns (uint256)",
-          ];
-          const contract = new ethers.Contract(address, FUND_ABI_PARTIAL, provider);
+          const contract = new ethers.Contract(address, FUND_ABI, provider);
           const creator = await contract.creator();
 
           if (creator.toLowerCase() === account.toLowerCase()) {

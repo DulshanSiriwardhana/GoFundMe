@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { ArrowRight, Zap, Globe, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import FundCard from "../components/FundCard";
-import { FACTORY_ABI, FACTORY_ADDRESS, type FundData } from "../utils/contract";
+import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { useWeb3 } from "../context/Web3Context";
 
 export default function Home() {
@@ -36,17 +36,7 @@ export default function Home() {
 
       for (const address of fundAddresses.slice(-10)) {
         try {
-          const FUND_ABI_PARTIAL = [
-            "function creator() view returns (address)",
-            "function projectName() view returns (string)",
-            "function goal() view returns (uint256)",
-            "function deadline() view returns (uint256)",
-            "function totalRaised() view returns (uint256)",
-            "function goalReached() view returns (bool)",
-            "function contributorCount() view returns (uint256)",
-            "function requestCount() view returns (uint256)",
-          ];
-          const contract = new ethers.Contract(address, FUND_ABI_PARTIAL, readProvider);
+          const contract = new ethers.Contract(address, FUND_ABI, readProvider);
           const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
               contract.creator(),
@@ -101,7 +91,7 @@ export default function Home() {
               <span className="text-emerald-400">to the future.</span>
             </h1>
             <p className="text-xl text-emerald-100/80 max-w-xl font-medium leading-relaxed">
-              Launch your campaign on the blockchain. Transparent, secure, and unstoppable funding for your dreams.
+              Launch your campaign on the GoFundChain. Transparent, secure, and unstoppable funding for your dreams.
             </p>
             <div className="flex flex-wrap gap-5 pt-4">
               <Link to="/create" className="px-10 py-4.5 bg-emerald-500 text-emerald-950 rounded-2xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 flex items-center gap-3">
@@ -133,18 +123,21 @@ export default function Home() {
       </section>
 
       <section id="explore">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-white">Trending Campaigns</h2>
+        <div className="flex items-center justify-between mb-12">
+          <div className="space-y-2">
+            <h2 className="text-4xl font-black text-emerald-950 tracking-tight">Trending Campaigns</h2>
+            <div className="h-1 w-20 bg-emerald-500 rounded-full" />
+          </div>
         </div>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-80 bg-emerald-900/30 border border-emerald-800 rounded-2xl animate-pulse"></div>
+              <div key={i} className="h-96 bg-white border border-emerald-50 rounded-[2rem] animate-pulse"></div>
             ))}
           </div>
         ) : funds.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {funds.map(fund => (
               <FundCard
                 key={fund.address}
@@ -159,9 +152,17 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-emerald-900/20 rounded-3xl border-2 border-dashed border-emerald-700">
-            <p className="text-emerald-100 mb-4 text-lg font-medium">No campaigns found. Be the first!</p>
-            <Link to="/create" className="text-emerald-300 font-bold hover:text-emerald-200 hover:underline text-lg">Launch a campaign &rarr;</Link>
+          <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-emerald-100 shadow-xl shadow-emerald-900/5 px-8">
+            <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-100/50">
+              <Globe className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h3 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">No campaigns found</h3>
+            <p className="text-emerald-900/40 mb-10 max-w-sm mx-auto font-bold uppercase tracking-widest text-xs leading-relaxed">
+              The blockchain is waiting for the next big idea. Be the first to launch!
+            </p>
+            <Link to="/create" className="inline-flex items-center gap-2 px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg">
+              Launch a campaign <ArrowRight className="w-6 h-6" />
+            </Link>
           </div>
         )}
       </section>
