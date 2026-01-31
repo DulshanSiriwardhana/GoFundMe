@@ -23,8 +23,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-emerald-600/20 group-hover:scale-105 transition-all">
-                                G
+                            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-emerald-600/20 group-hover:scale-105 transition-all">
+                                <img src="/favicon.png" alt="GoFundChain Logo" className="w-full h-full object-cover" />
                             </div>
                             <span className="text-2xl font-extrabold text-emerald-900 tracking-tight">
                                 GoFund<span className="text-emerald-500 font-normal">Chain</span>
@@ -139,8 +139,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                                G
+                            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center border border-white/20">
+                                <img src="/favicon.png" alt="GoFundChain Logo" className="w-full h-full object-cover" />
                             </div>
                             <span className="text-xl font-extrabold text-white tracking-tight">
                                 GoFundChain
