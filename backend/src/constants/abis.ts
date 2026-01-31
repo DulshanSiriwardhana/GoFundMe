@@ -31,6 +31,30 @@ export const FACTORY_ABI = [
 
 export const FUND_ABI = [
     {
+        anonymous: false,
+        inputs: [
+            { indexed: false, internalType: "address", name: "contributor", type: "address" },
+            { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+        ],
+        name: "Funded",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            { indexed: false, internalType: "string", name: "purpose", type: "string" },
+            { indexed: false, internalType: "uint256", name: "amount", type: "uint256" },
+        ],
+        name: "RequestCreated",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [{ indexed: false, internalType: "uint256", name: "amount", type: "uint256" }],
+        name: "Withdrawn",
+        type: "event",
+    },
+    {
         inputs: [],
         name: "creator",
         outputs: [{ internalType: "address", name: "", type: "address" }],

@@ -8,17 +8,26 @@ dotenv.config();
 const RPC_URL = process.env.LOCALHOST_RPC_URL || "http://localhost:8545";
 const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS || "";
 
+const activeListeners = new Set<string>();
+
+function getCategory(name: string): string {
+    const n = name.toLowerCase();
+    if (n.includes("tech") || n.includes("software") || n.includes("ai") || n.includes("app")) return "Tech";
+    if (n.includes("charity") || n.includes("help") || n.includes("poor") || n.includes("assist")) return "Charity";
+    if (n.includes("art") || n.includes("music") || n.includes("creative") || n.includes("film")) return "Creative";
+    if (n.includes("tree") || n.includes("nature") || n.includes("green") || n.includes("earth")) return "Environment";
+    return "Environment"; // Fallback to a valid category from CATEGORIES list in frontend
+}
+
 export async function startIndexer() {
     console.log("Starting GoFundChain Indexer...");
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
 
-    // Initial Sync
     await syncAllFunds(factory, provider);
 
-    // Listen for new funds
     factory.on("FundCreated", async (fundAddress, _creator, name) => {
-        console.log(`New Fund Created: ${name} at ${fundAddress}`);
+        console.log(`New Fund Event: ${name} at ${fundAddress}`);
         await indexFund(fundAddress, provider);
     });
 }
@@ -26,7 +35,7 @@ export async function startIndexer() {
 async function syncAllFunds(factory: any, provider: any) {
     try {
         const fundAddresses = await factory.getFunds();
-        console.log(`Syncing ${fundAddresses.length} funds...`);
+        console.log(`Syncing ${fundAddresses.length} existing funds...`);
         for (const address of fundAddresses) {
             await indexFund(address, provider);
         }
@@ -39,6 +48,7 @@ async function syncAllFunds(factory: any, provider: any) {
 async function indexFund(address: string, provider: any) {
     try {
         const fundContract = new ethers.Contract(address, FUND_ABI, provider);
+
         const [name, creator, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
                 fundContract.projectName(),
@@ -57,6 +67,7 @@ async function indexFund(address: string, provider: any) {
                 address,
                 projectName: name,
                 creator,
+                category: getCategory(name),
                 goal: ethers.formatEther(goal),
                 deadline: Number(deadline),
                 totalRaised: ethers.formatEther(totalRaised),
@@ -67,8 +78,26 @@ async function indexFund(address: string, provider: any) {
             },
             { upsert: true, new: true }
         );
-        console.log(`Indexed fund: ${name}`);
+
+        setupEventListeners(address, fundContract, provider);
+        console.log(`Synced & Listening: ${name} (${address})`);
     } catch (error) {
         console.error(`Failed to index fund ${address}:`, error);
     }
+}
+
+function setupEventListeners(address: string, contract: any, provider: any) {
+    if (activeListeners.has(address)) return;
+
+    contract.on("Funded", async (contributor, amount) => {
+        console.log(`[Event] Funded: ${address} - ${ethers.formatEther(amount)} ETH by ${contributor}`);
+        await indexFund(address, provider);
+    });
+
+    contract.on("Withdrawn", async (amount) => {
+        console.log(`[Event] Withdrawn: ${address} - ${ethers.formatEther(amount)} ETH`);
+        await indexFund(address, provider);
+    });
+
+    activeListeners.add(address);
 }
