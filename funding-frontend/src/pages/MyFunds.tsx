@@ -78,35 +78,55 @@ export default function MyFunds() {
 
   if (!account) {
     return (
-      <div className="text-center py-20">
-        <h2 className="text-2xl font-bold mb-4 text-white">Please connect your wallet</h2>
-        <p className="text-emerald-200">You need to connect your wallet to view your campaigns.</p>
+      <div className="text-center py-20 px-6 bg-white border border-emerald-100 rounded-3xl shadow-xl shadow-emerald-900/5 max-w-lg mx-auto mt-20">
+        <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <Plus className="w-8 h-8 text-emerald-400" />
+        </div>
+        <h2 className="text-3xl font-black mb-4 text-emerald-950 tracking-tight underline decoration-emerald-500/20 underline-offset-8">Connect Wallet</h2>
+        <p className="text-emerald-800/50 font-bold uppercase tracking-widest text-[10px] mb-8">You need to connect your wallet to view your campaigns</p>
+        <button
+          onClick={() => { }} // This should be handled by the layout's connect button
+          className="px-8 py-3.5 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700"
+        >
+          Go to Home
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 pb-12">
-      <div className="bg-emerald-900 border border-emerald-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-linear-to-bl from-emerald-600/10 to-transparent transform translate-x-1/4"></div>
-        <div className="relative z-10">
-          <h1 className="text-4xl font-extrabold text-white mb-4">My Campaigns</h1>
-          <p className="text-emerald-200/80 text-lg max-w-2xl">
-            Manage your fundraising campaigns and track your progress on the blockchain.
-          </p>
+    <div className="space-y-16 pb-20">
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-emerald-900 shadow-2xl shadow-emerald-900/40 px-10 py-16">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-linear-to-bl from-emerald-400/20 to-transparent transform translate-x-1/4 skew-x-12"></div>
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/50 border border-emerald-700/50 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em]">
+              Dashboard
+            </div>
+            <h1 className="text-5xl font-black text-white tracking-tighter leading-tight">My Campaigns</h1>
+            <p className="text-emerald-100/60 text-lg max-w-xl font-medium">
+              Manage your fundraising campaigns and track your progress on the blockchain.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/create')}
+            className="group px-8 py-4 bg-emerald-500 text-emerald-950 rounded-2xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-3 active:scale-95 shrink-0"
+          >
+            Launch New <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
+          </button>
         </div>
-      </div>
+      </section>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {[1, 2].map(i => (
-            <div key={i} className="h-80 bg-emerald-900/30 border border-emerald-800 rounded-2xl animate-pulse"></div>
+            <div key={i} className="h-96 bg-white border border-emerald-50 rounded-[2rem] animate-pulse"></div>
           ))}
         </div>
       ) : funds.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
           {funds.map(fund => (
-            <div key={fund.address} className="relative group">
+            <div key={fund.address} className="relative">
               <FundCard
                 name={fund.projectName}
                 goal={fund.goal}
@@ -120,17 +140,17 @@ export default function MyFunds() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-emerald-900/20 rounded-3xl border border-dashed border-emerald-800">
-          <div className="w-16 h-16 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Plus className="w-8 h-8 text-emerald-400" />
+        <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-emerald-100 shadow-xl shadow-emerald-900/5 px-8">
+          <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-100/50">
+            <Plus className="w-10 h-10 text-emerald-500" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">No campaigns yet</h3>
-          <p className="text-emerald-100 mb-8 max-w-md mx-auto">
+          <h3 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">No campaigns yet</h3>
+          <p className="text-emerald-900/40 mb-10 max-w-sm mx-auto font-bold uppercase tracking-widest text-xs leading-relaxed">
             You haven't created any campaigns yet. Start your journey today!
           </p>
           <button
             onClick={() => navigate('/create')}
-            className="px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98]"
+            className="px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg"
           >
             Create your first Campaign
           </button>

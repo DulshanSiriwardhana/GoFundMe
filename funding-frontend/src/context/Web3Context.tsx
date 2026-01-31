@@ -6,6 +6,7 @@ interface Web3ContextType {
     provider: ethers.BrowserProvider | null;
     signer: ethers.JsonRpcSigner | null;
     connectWallet: () => Promise<void>;
+    disconnectWallet: () => void;
     isLoading: boolean;
     error: string | null;
 }
@@ -44,6 +45,11 @@ export function Web3Provider({ children }: { children: ReactNode }) {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const disconnectWallet = () => {
+        setAccount(null);
+        setSigner(null);
     };
 
     useEffect(() => {
@@ -91,7 +97,7 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <Web3Context.Provider value={{ account, provider, signer, connectWallet, isLoading, error }}>
+        <Web3Context.Provider value={{ account, provider, signer, connectWallet, disconnectWallet, isLoading, error }}>
             {children}
         </Web3Context.Provider>
     );

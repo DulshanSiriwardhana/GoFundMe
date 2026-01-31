@@ -88,40 +88,44 @@ export default function Home() {
   }, [loadFunds]);
 
   return (
-    <div className="space-y-16 pb-16">
-      <section className="relative overflow-hidden rounded-3xl bg-emerald-900 border border-emerald-800 shadow-2xl">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-emerald-600/20 to-transparent transform translate-x-1/4 skew-x-12"></div>
-        <div className="relative z-10 px-8 py-20 sm:px-12 lg:px-16 flex flex-col md:flex-row items-center gap-12">
-          <div className="flex-1 space-y-6">
-            <h1 className="text-5xl font-extrabold tracking-tight leading-tight text-white">
-              Fund the Future, <br />
-              <span className="text-emerald-400">Decentralized.</span>
+    <div className="space-y-20 pb-20">
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-emerald-900 shadow-2xl shadow-emerald-900/40">
+        <div className="absolute top-0 right-0 w-2/3 h-full bg-linear-to-bl from-emerald-400/20 via-emerald-500/10 to-transparent transform translate-x-1/4 skew-x-12"></div>
+        <div className="relative z-10 px-8 py-24 sm:px-12 lg:px-20 flex flex-col md:flex-row items-center gap-16">
+          <div className="flex-1 space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-800/50 border border-emerald-700/50 text-emerald-300 text-xs font-bold uppercase tracking-widest">
+              <Zap className="w-3.5 h-3.5" /> Empowering Ideas
+            </div>
+            <h1 className="text-6xl font-extrabold tracking-tight leading-[1.1] text-white">
+              Follow the fund <br />
+              <span className="text-emerald-400">to the future.</span>
             </h1>
-            <p className="text-lg text-emerald-100 max-w-xl">
+            <p className="text-xl text-emerald-100/80 max-w-xl font-medium leading-relaxed">
               Launch your campaign on the blockchain. Transparent, secure, and unstoppable funding for your dreams.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Link to="/create" className="px-8 py-3.5 bg-emerald-500 text-white rounded-xl font-bold hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-900/20 active:scale-95 flex items-center gap-2">
-                Start a Campaign <ArrowRight className="w-5 h-5" />
+            <div className="flex flex-wrap gap-5 pt-4">
+              <Link to="/create" className="px-10 py-4.5 bg-emerald-500 text-emerald-950 rounded-2xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 flex items-center gap-3">
+                Start a Campaign <ArrowRight className="w-6 h-6" />
               </Link>
               <button onClick={() => {
                 document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' });
-              }} className="px-8 py-3.5 bg-emerald-900/60 text-white border-2 border-emerald-500/50 rounded-xl font-bold hover:bg-emerald-800/80 hover:border-emerald-400 transition-colors">
+              }} className="px-10 py-4.5 bg-white/10 text-white border-2 border-white/20 rounded-2xl font-black hover:bg-white/20 transition-all backdrop-blur-md">
                 Explore Projects
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full md:w-auto relative group">
+            <div className="absolute -inset-4 bg-emerald-400/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
             {[
               { icon: Zap, label: "Instant Payouts", desc: "No waiting for banks." },
               { icon: ShieldCheck, label: "Secure", desc: "Audited contracts." },
               { icon: Globe, label: "Global", desc: "Anyone can donate." },
             ].map((feat, i) => (
-              <div key={i} className="bg-emerald-950/40 backdrop-blur-md border border-emerald-500/20 p-4 rounded-2xl hover:border-emerald-500/40 transition-colors">
-                <feat.icon className="w-6 h-6 text-emerald-400 mb-2" />
-                <div className="font-bold text-sm text-white">{feat.label}</div>
-                <div className="text-xs text-emerald-200">{feat.desc}</div>
+              <div key={i} className="bg-white/10 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] hover:bg-white/15 transition-all relative z-10">
+                <feat.icon className="w-8 h-8 text-emerald-400 mb-4" />
+                <div className="font-bold text-lg text-white mb-1">{feat.label}</div>
+                <div className="text-sm text-emerald-100/60 leading-tight">{feat.desc}</div>
               </div>
             ))}
           </div>

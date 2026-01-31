@@ -4,7 +4,8 @@ import { ethers } from "ethers";
 import { useWeb3 } from "../context/Web3Context";
 import { FUND_ABI, type FundData } from "../utils/contract";
 import { Card } from "../components/ui/Card";
-import { AlertCircle, Clock, Heart } from "lucide-react";
+import { AlertCircle, Clock, Heart, Users, MapPin, Share2 } from "lucide-react";
+import { useAlert } from "../context/AlertContext";
 
 export default function FundDetails() {
     const { address } = useParams();
@@ -13,6 +14,9 @@ export default function FundDetails() {
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState("");
     const [donating, setDonating] = useState(false);
+    const { showAlert } = useAlert();
+
+    const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
     const loadFundData = useCallback(async () => {
         if (!address || !provider) return;
@@ -59,18 +63,16 @@ export default function FundDetails() {
             const contract = new ethers.Contract(fund.address, FUND_ABI, signer);
             const tx = await contract.deposit({ value: ethers.parseEther(amount) });
             await tx.wait();
-            alert("Donation successful!");
+            showAlert("success", "Thank you! Your donation was successful.");
             loadFundData();
             setAmount("");
         } catch (error: unknown) {
             console.error("Donation failed:", error);
             let message = "Donation failed";
             if (error instanceof Error) {
-                message += ": " + (error.message);
-            } else if (typeof error === 'object' && error !== null && 'reason' in error) {
-                message += ": " + (error as { reason: string }).reason;
+                message = (error as { reason?: string }).reason || error.message;
             }
-            alert(message);
+            showAlert("error", message);
         } finally {
             setDonating(false);
         }
@@ -83,87 +85,97 @@ export default function FundDetails() {
     const timeLeft = Math.max(0, Math.ceil((fund.deadline * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="flex-1 space-y-4">
-                    <div className="inline-block px-3 py-1 rounded-full bg-emerald-900/50 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wide">
+        <div className="space-y-12">
+            <div className="flex flex-col md:flex-row gap-12">
+                <div className="flex-1 space-y-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em]">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                         Active Campaign
                     </div>
-                    <h1 className="text-4xl font-extrabold text-white leading-tight">
+                    <h1 className="text-5xl font-black text-emerald-950 leading-[1.1] tracking-tight">
                         {fund.projectName}
                     </h1>
-                    <div className="flex items-center gap-4 text-sm text-emerald-200/70">
-                        <div className="flex items-center gap-1.5">
-                            <div className="w-8 h-8 rounded-full bg-linear-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-emerald-900">
+                    <div className="flex flex-wrap items-center gap-6 text-sm font-bold text-emerald-800/50">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-emerald-600/20">
                                 {fund.creator.substring(2, 4).toUpperCase()}
                             </div>
                             <span>
-                                Created by <span className="font-semibold text-white">{fund.creator}</span>
+                                Created by <span className="text-emerald-950">{formatAddress(fund.creator)}</span>
                             </span>
                         </div>
-                        <span className="w-1 h-1 rounded-full bg-emerald-700"></span>
-                        <div className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4" />
-                            <span>{new Date(fund.deadline * 1000).toLocaleDateString()}</span>
+                        <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-emerald-400" />
+                            <span>Ends {new Date(fund.deadline * 1000).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-emerald-400" />
+                            <span>Global</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-                    <Card className="aspect-video bg-emerald-900/30 border-emerald-800 flex items-center justify-center text-emerald-600/50">
-                        <span className="text-lg font-medium">Campaign Image Placeholder</span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div className="lg:col-span-2 space-y-8">
+                    <Card className="aspect-video bg-emerald-50 border-emerald-100 flex items-center justify-center text-emerald-200 group relative overflow-hidden">
+                        <div className="absolute inset-0 bg-linear-to-br from-emerald-400/5 to-transparent" />
+                        <span className="text-2xl font-black uppercase tracking-widest relative z-10">Campaign Image</span>
+                        <div className="absolute bottom-6 right-6">
+                            <button className="p-3 bg-white rounded-2xl shadow-xl border border-emerald-50 text-emerald-600 hover:scale-110 transition-transform">
+                                <Share2 className="w-5 h-5" />
+                            </button>
+                        </div>
                     </Card>
 
-                    <Card className="bg-emerald-950 border-emerald-800">
-                        <h3 className="text-xl font-bold mb-4 text-white">About this campaign</h3>
-                        <p className="text-emerald-100/80 leading-relaxed">
+                    <Card className="p-10 border-emerald-100 bg-white shadow-xl shadow-emerald-900/5">
+                        <h3 className="text-2xl font-black mb-6 text-emerald-950 uppercase tracking-tight">About this campaign</h3>
+                        <p className="text-emerald-900/70 leading-loose text-lg font-medium">
                             This campaign is raising funds on the blockchain. Transparency and accountability are guaranteed by smart contracts.
-                            Contributors can vote on how funds are spent.
+                            Contributors can vote on how funds are spent. Join us in shaping the future of decentralized crowdfunding.
                         </p>
                     </Card>
                 </div>
 
-                <div className="space-y-6">
-                    <Card className="p-8 sticky top-24 bg-emerald-950 border-emerald-800 shadow-xl shadow-emerald-900/20">
-                        <div className="space-y-6">
+                <div className="space-y-8">
+                    <Card className="p-10 sticky top-32 border-emerald-100 bg-white shadow-2xl shadow-emerald-900/10 scale-105 origin-top">
+                        <div className="space-y-8">
                             <div>
-                                <div className="flex items-baseline justify-between mb-2">
-                                    <span className="text-3xl font-extrabold text-white">
-                                        {parseFloat(fund.totalRaised).toFixed(4)}
+                                <div className="flex items-baseline justify-between mb-4">
+                                    <span className="text-4xl font-black text-emerald-950 tracking-tighter">
+                                        {parseFloat(fund.totalRaised).toFixed(3)}
                                     </span>
-                                    <span className="text-sm font-semibold text-emerald-400">
-                                        of {fund.goal} ETH goal
+                                    <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">
+                                        of {fund.goal} ETH Goal
                                     </span>
                                 </div>
-                                <div className="w-full bg-emerald-900 rounded-full h-3 overflow-hidden">
+                                <div className="w-full bg-emerald-50 rounded-full h-4 overflow-hidden border border-emerald-100/50">
                                     <div
-                                        className="bg-emerald-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                                        className="bg-emerald-500 h-full rounded-full transition-all duration-1000 ease-out"
                                         style={{ width: `${progress}%` }}
                                     ></div>
                                 </div>
-                                <div className="flex justify-between mt-3 text-sm text-emerald-200/60">
-                                    <span>{fund.contributorCount} contributors</span>
-                                    <span>{timeLeft} days left</span>
+                                <div className="flex justify-between mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-800/40">
+                                    <span className="flex items-center gap-1.5"><Users className="w-3 h-3" /> {fund.contributorCount} Contributors</span>
+                                    <span>{timeLeft} Days Left</span>
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-6 border-t border-emerald-800">
-                                <h4 className="font-bold text-white flex items-center gap-2">
+                            <div className="space-y-6 pt-8 border-t border-emerald-50">
+                                <h4 className="font-black text-emerald-950 uppercase tracking-widest text-xs flex items-center gap-2">
                                     <Heart className="w-4 h-4 text-emerald-500 fill-emerald-500" />
                                     Support this project
                                 </h4>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span className="text-emerald-500 font-bold sm:text-sm">ETH</span>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <span className="text-emerald-500 font-black text-xs">ETH</span>
                                     </div>
                                     <input
                                         type="number"
                                         min="0.001"
                                         step="0.001"
-                                        className="block w-full pl-12 pr-12 py-3 bg-emerald-900/50 border border-emerald-700 rounded-xl leading-5 text-white placeholder-emerald-700/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 sm:text-sm transition-all"
-                                        placeholder="0.1"
+                                        className="block w-full pl-14 pr-4 py-4.5 bg-emerald-50/50 border-2 border-emerald-100 rounded-2xl leading-5 text-emerald-950 font-black placeholder-emerald-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg"
+                                        placeholder="0.10"
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                     />
@@ -171,20 +183,20 @@ export default function FundDetails() {
                                 <button
                                     onClick={handleDonate}
                                     disabled={donating || !account}
-                                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-emerald-600/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg"
                                 >
                                     {donating ? (
                                         <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                                             Processing...
                                         </>
                                     ) : (
-                                        "Donate Now"
+                                        "Back this project"
                                     )}
                                 </button>
                                 {!account && (
-                                    <p className="text-xs text-center text-amber-600 bg-amber-50 py-2 rounded">
-                                        <AlertCircle className="w-3 h-3 inline mr-1" />
+                                    <p className="text-[10px] text-center font-black uppercase tracking-widest text-amber-600 bg-amber-50 py-3 rounded-xl border border-amber-100 flex items-center justify-center gap-2">
+                                        <AlertCircle className="w-4 h-4" />
                                         Connect wallet to donate
                                     </p>
                                 )}

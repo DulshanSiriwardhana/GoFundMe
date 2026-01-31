@@ -9,12 +9,15 @@
 @theme {
   --font-serif: "Spectral", serif;
   --font-spectral: "Spectral", serif;
+  --color-primary: #014d40;
+  --color-secondary: #f0fdf4;
+  --color-accent: #fbbf24;
 }
 
 html,
 body {
-  background-color: #022c22;
-  color: #ffffff;
+  background-color: #f0fdf4;
+  color: #014d40;
   font-family: 'Spectral', serif !important;
 }
 
@@ -53,21 +56,20 @@ textarea {
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
-  /* Very dark background to match the theme */
+  background: #f0fdf4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #064e3b;
+  background: #014d40;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #064e3b;
 }
 
 /* Firefox support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #064e3b #020617;
+  scrollbar-color: #014d40 #f0fdf4;
 }

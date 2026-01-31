@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
 
 import { FACTORY_ADDRESS, FACTORY_ABI } from "../utils/contract";
-import { ArrowRight, Calendar, Target, AlertCircle, Type } from "lucide-react";
-import Toast, { type ToastType } from "../components/Toast";
+import { ArrowRight, Calendar, Target, Type, Sparkles } from "lucide-react";
+import { useAlert } from "../context/AlertContext";
+import { Card } from "../components/ui/Card";
 
 export default function CreateFund() {
   const navigate = useNavigate();
@@ -18,18 +19,16 @@ export default function CreateFund() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [toast, setToast] = useState<{ type: ToastType; message: string } | null>(null);
+  const { showAlert } = useAlert();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!provider || !signer) {
-      setError("Please connect your wallet first.");
+      showAlert("warning", "Please connect your wallet first.");
       return;
     }
 
     setLoading(true);
-    setError("");
 
     try {
       const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
@@ -37,114 +36,109 @@ export default function CreateFund() {
       const durationInSeconds = parseInt(formData.duration) * 24 * 60 * 60;
 
       const tx = await factory.createFund(formData.name, goalInWei, durationInSeconds);
-
       await tx.wait();
 
-      setToast({ type: "success", message: "Campaign created successfully!" });
+      showAlert("success", "Success! Your campaign has been launched on the blockchain.");
       setTimeout(() => navigate("/"), 2000);
     } catch (err: unknown) {
       console.error(err);
-      let message = "Failed to create fund.";
+      let message = "Failed to launch campaign.";
       if (err instanceof Error) {
         message = (err as { reason?: string; message?: string }).reason || err.message || message;
       }
-      setError(message);
+      showAlert("error", message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto py-12">
-      <div className="bg-emerald-950 border border-emerald-800 rounded-3xl p-8 shadow-2xl">
-        <h2 className="text-3xl font-extrabold mb-8 text-center text-white">
-          Launch Your <span className="text-emerald-400">Campaign</span>
-        </h2>
-
-        {error && (
-          <div className="bg-red-900/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span className="text-sm font-medium">{error}</span>
+    <div className="max-w-2xl mx-auto py-16">
+      <Card className="p-10 border-emerald-100 bg-white shadow-2xl shadow-emerald-900/10">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+            <Sparkles className="w-3 h-3" /> Start something new
           </div>
-        )}
+          <h2 className="text-4xl font-black text-emerald-950 tracking-tight">
+            Launch Your <span className="text-emerald-500">Campaign</span>
+          </h2>
+          <p className="text-emerald-900/40 text-sm font-bold mt-4 uppercase tracking-widest">
+            Fill in the details to deploy your contract
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-white">Campaign Name</label>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-3">
+            <label className="text-xs font-black uppercase tracking-widest text-emerald-900/60 ml-1">Campaign Name</label>
             <div className="relative group">
               <input
                 type="text"
                 required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
-                placeholder="e.g. Community Garden"
+                className="w-full bg-emerald-50/50 border-2 border-emerald-50 rounded-2xl px-5 py-4 pl-12 text-emerald-950 font-bold placeholder:text-emerald-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all"
+                placeholder="e.g. Save the Ocean"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
-              <Type className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+              <Type className="absolute left-4.5 top-4.5 w-5 h-5 text-emerald-300 group-hover:text-emerald-500 transition-colors" />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-white">Funding Goal (ETH)</label>
-            <div className="relative group">
-              <input
-                type="number"
-                step="0.001"
-                required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
-                placeholder="10.0"
-                value={formData.goal}
-                onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-              />
-              <Target className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-xs font-black uppercase tracking-widest text-emerald-900/60 ml-1">Funding Goal (ETH)</label>
+              <div className="relative group">
+                <input
+                  type="number"
+                  step="0.001"
+                  required
+                  className="w-full bg-emerald-50/50 border-2 border-emerald-50 rounded-2xl px-5 py-4 pl-12 text-emerald-950 font-bold placeholder:text-emerald-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all"
+                  placeholder="5.00"
+                  value={formData.goal}
+                  onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
+                />
+                <Target className="absolute left-4.5 top-4.5 w-5 h-5 text-emerald-300 group-hover:text-emerald-500 transition-colors" />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-white">Duration (Days)</label>
-            <div className="relative group">
-              <input
-                type="number"
-                min="1"
-                max="365"
-                required
-                className="w-full bg-emerald-900/50 border border-emerald-700 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
-                placeholder="30"
-                value={formData.duration}
-                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-              />
-              <Calendar className="absolute left-3.5 top-3.5 w-5 h-5 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+            <div className="space-y-3">
+              <label className="text-xs font-black uppercase tracking-widest text-emerald-900/60 ml-1">Duration (Days)</label>
+              <div className="relative group">
+                <input
+                  type="number"
+                  min="1"
+                  max="365"
+                  required
+                  className="w-full bg-emerald-50/50 border-2 border-emerald-50 rounded-2xl px-5 py-4 pl-12 text-emerald-950 font-bold placeholder:text-emerald-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all"
+                  placeholder="30"
+                  value={formData.duration}
+                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                />
+                <Calendar className="absolute left-4.5 top-4.5 w-5 h-5 text-emerald-300 group-hover:text-emerald-500 transition-colors" />
+              </div>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-8"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-emerald-600/20 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg mt-10"
           >
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Creating...
+                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                Launching...
               </>
             ) : (
               <>
-                Create Campaign <ArrowRight className="w-5 h-5" />
+                Launch Campaign <ArrowRight className="w-6 h-6" />
               </>
             )}
           </button>
         </form>
-      </div>
-      <p className="text-center text-xs text-emerald-300 mt-4">
-        By launching, you are deploying a immutable smart contract. Gas fees apply.
+      </Card>
+      <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-emerald-800/20 mt-8">
+        Immutable Smart Contract &bull; Blockchain Powered &bull; Gas Fees Apply
       </p>
-      {toast && (
-        <Toast
-          type={toast.type}
-          message={toast.message}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 }
