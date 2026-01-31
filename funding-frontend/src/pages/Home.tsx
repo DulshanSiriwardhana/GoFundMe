@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
-import { ArrowRight, Zap, Globe, ShieldCheck, Search, Filter } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, Zap, Globe, ShieldCheck, Search, Filter, Sparkles, TrendingUp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import FundCard from "../components/FundCard";
 import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { useWeb3 } from "../context/Web3Context";
@@ -11,6 +11,7 @@ const CATEGORIES = ["All", "Tech", "Charity", "Creative", "Community", "Environm
 export default function Home() {
   const [funds, setFunds] = useState<FundData[]>([]);
   const { provider } = useWeb3();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -32,8 +33,7 @@ export default function Home() {
       const fundAddresses = await factory.getFunds();
       const fundData: FundData[] = [];
 
-      // Only take last 10 for performance in blockchain-direct mode
-      for (const address of fundAddresses.slice(-10)) {
+      for (const address of fundAddresses.slice(-12)) {
         try {
           const contract = new ethers.Contract(address, FUND_ABI, readProvider);
           const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
@@ -52,6 +52,7 @@ export default function Home() {
             address,
             creator,
             projectName,
+            category: "Community",
             goal: ethers.formatEther(goal),
             deadline: Number(deadline),
             totalRaised: ethers.formatEther(totalRaised),
@@ -73,7 +74,6 @@ export default function Home() {
   const loadFunds = useCallback(async () => {
     setLoading(true);
     try {
-      // Try backend first
       const response = await fetch(`http://localhost:3001/api/funds?search=${searchQuery}`);
       if (response.ok) {
         const data = await response.json();
@@ -82,7 +82,6 @@ export default function Home() {
         throw new Error("Backend unavailable");
       }
     } catch (err) {
-      console.warn("Falling back to blockchain-direct fetch...");
       const blockchainFunds = await loadFundsFromBlockchain();
       setFunds(blockchainFunds);
     } finally {
@@ -95,100 +94,106 @@ export default function Home() {
   }, [loadFunds]);
 
   const filteredFunds = useMemo(() => {
-    // Simple frontend filtering for categories since we don't have them in contract yet
-    // In a real app, categories would be indexed in DB
     return funds.filter(fund => {
       const name = fund.projectName || "";
       const addr = fund.address || "";
+      const cat = fund.category || "Community";
+
       const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         addr.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
+
+      const matchesCategory = activeCategory === "All" || cat === activeCategory;
+
+      return matchesSearch && matchesCategory;
     });
-  }, [funds, searchQuery]);
+  }, [funds, searchQuery, activeCategory]);
 
   return (
-    <div className="space-y-20 pb-20">
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-emerald-900 shadow-2xl shadow-emerald-900/40">
-        <div className="absolute top-0 right-0 w-2/3 h-full bg-linear-to-bl from-emerald-400/20 via-emerald-500/10 to-transparent transform translate-x-1/4 skew-x-12"></div>
-        <div className="relative z-10 px-8 py-24 sm:px-12 lg:px-20 flex flex-col md:flex-row items-center gap-16">
-          <div className="flex-1 space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-800/50 border border-emerald-700/50 text-emerald-300 text-xs font-bold uppercase tracking-widest">
-              <Zap className="w-3.5 h-3.5" /> Empowering Ideas
+    <div className="space-y-16 md:space-y-24 pb-24">
+      <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden rounded-3xl bg-emerald-950 shadow-xl">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-10 mix-blend-overlay" />
+        <div className="absolute top-0 right-0 w-full h-full bg-linear-to-bl from-emerald-400/10 via-transparent to-transparent" />
+
+        <div className="relative z-10 px-6 py-16 sm:px-12 lg:px-20 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 space-y-8 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[10px] font-black uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5" /> Empowering the Future
             </div>
-            <h1 className="text-6xl font-extrabold tracking-tight leading-[1.1] text-white">
-              Follow the fund <br />
-              <span className="text-emerald-400">to the future.</span>
+
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.1] text-white">
+              Launch your <br className="hidden sm:block" />
+              <span className="text-emerald-400 italic">Visionary Idea.</span>
             </h1>
-            <p className="text-xl text-emerald-100/80 max-w-xl font-medium leading-relaxed">
-              Launch your campaign on the GoFundChain. Transparent, secure, and unstoppable funding for your dreams.
+
+            <p className="text-lg sm:text-xl text-emerald-100/60 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+              Global, secure, and transparent protocol for decentralized crowdfunding.
             </p>
-            <div className="flex flex-wrap gap-5 pt-4">
-              <Link to="/create" className="px-10 py-4.5 bg-emerald-500 text-emerald-950 rounded-2xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 active:scale-95 flex items-center gap-3">
-                Start a Campaign <ArrowRight className="w-6 h-6" />
+
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 pt-4">
+              <Link to="/create" className="group px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-500 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
+                Start a Campaign <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button onClick={() => {
-                document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' });
-              }} className="px-10 py-4.5 bg-white/10 text-white border-2 border-white/20 rounded-2xl font-black hover:bg-white/20 transition-all backdrop-blur-md">
+              <button
+                onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-white/5 text-white border border-white/10 rounded-2xl font-black hover:bg-white/10 transition-all backdrop-blur-md"
+              >
                 Explore Projects
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full md:w-auto relative group" title="Our Features">
-            <div className="absolute -inset-4 bg-emerald-400/20 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="hidden lg:grid grid-cols-2 gap-4 w-full max-w-sm">
             {[
-              { icon: Zap, label: "Instant Payouts", desc: "No waiting for banks." },
-              { icon: ShieldCheck, label: "Secure", desc: "Audited contracts." },
-              { icon: Globe, label: "Global", desc: "Anyone can donate." },
+              { icon: Zap, label: "Fast", desc: "Global payouts." },
+              { icon: ShieldCheck, label: "Secure", desc: "On-chain trust." },
+              { icon: Globe, label: "Boundless", desc: "No borders." },
+              { icon: TrendingUp, label: "Live", desc: "Real-time data." },
             ].map((feat, i) => (
-              <div key={i} className="bg-white/10 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] hover:bg-white/15 transition-all relative z-10">
-                <feat.icon className="w-8 h-8 text-emerald-400 mb-4" />
-                <div className="font-bold text-lg text-white mb-1">{feat.label}</div>
-                <div className="text-sm text-emerald-100/60 leading-tight">{feat.desc}</div>
+              <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+                <feat.icon className="w-5 h-5 text-emerald-400 mb-4" />
+                <div className="font-black text-white mb-1">{feat.label}</div>
+                <div className="text-xs text-emerald-100/40 leading-tight">{feat.desc}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="explore" className="space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+      <section id="explore" className="space-y-10 px-2 sm:px-0">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
           <div className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-4xl font-black text-emerald-950 tracking-tight">Trending Campaigns</h2>
-              <div className="h-1 w-20 bg-emerald-500 rounded-full" />
-            </div>
-            <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">
-              Discover groundbreaking projects on the chain
+            <h2 className="text-3xl sm:text-4xl font-black text-emerald-950 tracking-tight italic">Explore Visions</h2>
+            <p className="text-emerald-900/40 font-black uppercase tracking-widest text-[10px]">
+              Active campaigns on the blockchain
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:max-w-2xl">
-            <div className="relative flex-1 group">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400 group-focus-within:text-emerald-600 transition-colors" />
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:max-w-2xl">
+            <div className="relative flex-1">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
               <input
                 type="text"
-                placeholder="Search campaigns or addresses..."
+                placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-white border-2 border-emerald-50 rounded-2xl focus:border-emerald-500 focus:outline-none shadow-lg shadow-emerald-900/5 transition-all text-emerald-950 font-medium placeholder:text-emerald-900/20"
+                className="w-full pl-12 pr-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:border-emerald-500 focus:outline-none shadow-sm transition-all text-emerald-950 font-bold placeholder:text-emerald-900/20"
               />
             </div>
-            <button className="px-6 py-4 bg-white border-2 border-emerald-50 text-emerald-950 rounded-2xl font-bold flex items-center justify-center gap-3 hover:border-emerald-500 transition-all shadow-lg shadow-emerald-900/5 active:scale-95 group">
-              <Filter className="w-5 h-5 text-emerald-400 group-hover:text-emerald-600 transition-colors" />
-              Filters
+            <button className="px-6 py-4 bg-white border border-emerald-100 text-emerald-950 rounded-2xl font-black flex items-center justify-center gap-2 hover:border-emerald-500 transition-all shadow-sm active:scale-95">
+              <Filter className="w-4 h-4 text-emerald-400" />
+              Filter
             </button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 pb-4 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-3 pb-4 overflow-x-auto no-scrollbar mask-fade-right">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2.5 rounded-full text-sm font-black tracking-tight transition-all border-2 whitespace-nowrap active:scale-95 ${activeCategory === cat
-                ? "bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-600/30"
-                : "bg-white border-emerald-50 text-emerald-900/40 hover:border-emerald-200"
+              className={`px-6 py-2 rounded-full text-[10px] font-black tracking-widest uppercase transition-all border-2 whitespace-nowrap active:scale-95 ${activeCategory === cat
+                ? "bg-emerald-950 border-emerald-950 text-white shadow-md"
+                : "bg-white border-emerald-50 text-emerald-900/30 hover:border-emerald-200"
                 }`}
             >
               {cat}
@@ -197,13 +202,13 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-96 bg-white border border-emerald-50 rounded-[2rem] animate-pulse"></div>
+              <div key={i} className="h-80 bg-emerald-50/50 rounded-2xl animate-pulse" />
             ))}
           </div>
         ) : filteredFunds.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredFunds.map(fund => (
               <FundCard
                 key={fund.address}
@@ -213,22 +218,21 @@ export default function Home() {
                 creator={fund.creator}
                 deadline={fund.deadline}
                 contributors={fund.contributorCount}
-                onClick={() => window.location.href = `/fund/${fund.address}`}
+                category={fund.category}
+                onClick={() => navigate(`/fund/${fund.address}`)}
               />
             ))}
           </div>
         ) : (
-          <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-emerald-100 shadow-xl shadow-emerald-900/5 px-8">
-            <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-100/50">
-              <Globe className="w-10 h-10 text-emerald-500" />
-            </div>
-            <h3 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">No campaigns found</h3>
-            <p className="text-emerald-900/40 mb-10 max-w-sm mx-auto font-bold uppercase tracking-widest text-xs leading-relaxed">
-              {searchQuery ? "No results match your search query." : "The blockchain is waiting for the next big idea. Be the first to launch!"}
+          <div className="text-center py-20 bg-white border border-emerald-50 rounded-3xl px-8 shadow-sm">
+            <Globe className="w-12 h-12 text-emerald-100 mx-auto mb-6" />
+            <h3 className="text-2xl font-black text-emerald-950 mb-3 tracking-tight">No results.</h3>
+            <p className="text-emerald-900/40 max-w-xs mx-auto font-bold uppercase tracking-widest text-[10px] leading-relaxed mb-8">
+              Adjust your search or category filters to discover more visions.
             </p>
             {!searchQuery && (
-              <Link to="/create" className="inline-flex items-center gap-2 px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg">
-                Launch a campaign <ArrowRight className="w-6 h-6" />
+              <Link to="/create" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg transition-all active:scale-95">
+                Launch your own Vision <ArrowRight className="w-5 h-5" />
               </Link>
             )}
           </div>

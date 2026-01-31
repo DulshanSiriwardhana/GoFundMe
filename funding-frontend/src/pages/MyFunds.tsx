@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
 import FundCard from "../components/FundCard";
 import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
-import { Plus } from "lucide-react";
+import { Layout, ArrowRight, Plus } from "lucide-react";
 
 export default function MyFunds() {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ export default function MyFunds() {
     try {
       setLoading(true);
       const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
-
       const fundAddresses = await factory.getFunds();
       const myFunds: FundData[] = [];
 
@@ -41,6 +40,7 @@ export default function MyFunds() {
               address,
               creator,
               projectName,
+              category: "Community",
               goal: ethers.formatEther(goal),
               deadline: Number(deadline),
               totalRaised: ethers.formatEther(totalRaised),
@@ -69,85 +69,85 @@ export default function MyFunds() {
 
   if (!account) {
     return (
-      <div className="text-center py-20 px-6 bg-white border border-emerald-100 rounded-3xl shadow-xl shadow-emerald-900/5 max-w-lg mx-auto mt-20">
-        <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Plus className="w-8 h-8 text-emerald-400" />
+      <div className="max-w-xl mx-auto py-24 px-6 text-center space-y-8 p-12 border border-emerald-50 rounded-2xl bg-white shadow-sm">
+        <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto text-emerald-300">
+          <Layout className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-black mb-4 text-emerald-950 tracking-tight underline decoration-emerald-500/20 underline-offset-8">Connect Wallet</h2>
-        <p className="text-emerald-800/50 font-bold uppercase tracking-widest text-[10px] mb-8">You need to connect your wallet to view your campaigns</p>
+        <div className="space-y-2">
+          <h2 className="text-3xl font-black text-emerald-950 italic">Locked Dashboard.</h2>
+          <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">
+            Please connect your wallet to view your visions.
+          </p>
+        </div>
         <button
-          onClick={() => { }} // This should be handled by the layout's connect button
-          className="px-8 py-3.5 bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-600/20 transition-all hover:bg-emerald-700"
+          onClick={() => navigate('/')}
+          className="px-8 py-4 bg-emerald-600 text-white font-black rounded-xl shadow-lg active:scale-95"
         >
-          Go to Home
+          Go Back
         </button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-16 pb-20">
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-emerald-900 shadow-2xl shadow-emerald-900/40 px-10 py-16">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-linear-to-bl from-emerald-400/20 to-transparent transform translate-x-1/4 skew-x-12"></div>
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/50 border border-emerald-700/50 text-emerald-300 text-[10px] font-black uppercase tracking-[0.2em]">
-              Dashboard
-            </div>
-            <h1 className="text-5xl font-black text-white tracking-tighter leading-tight">My Campaigns</h1>
-            <p className="text-emerald-100/60 text-lg max-w-xl font-medium">
-              Manage your fundraising campaigns and track your progress on the blockchain.
-            </p>
+    <div className="space-y-16 pb-24">
+      <section className="relative overflow-hidden rounded-3xl bg-emerald-950 p-10 md:p-16 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-10">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[10px] font-black uppercase tracking-widest">
+            Mission Control
           </div>
-          <button
-            onClick={() => navigate('/create')}
-            className="group px-8 py-4 bg-emerald-500 text-emerald-950 rounded-2xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20 flex items-center gap-3 active:scale-95 shrink-0"
-          >
-            Launch New <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-          </button>
+          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-none">My <span className="text-emerald-400 italic">Visions.</span></h1>
+          <p className="text-emerald-100/40 font-medium max-w-md">
+            Manage and track the pulse of your on-chain campaigns.
+          </p>
         </div>
+
+        <button
+          onClick={() => navigate('/create')}
+          className="px-8 py-5 bg-emerald-500 text-emerald-950 rounded-xl font-black hover:bg-emerald-400 transition-all shadow-xl active:scale-95 flex items-center gap-3"
+        >
+          <Plus className="w-5 h-5" /> Launch New Vision
+        </button>
       </section>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2].map(i => (
-            <div key={i} className="h-96 bg-white border border-emerald-50 rounded-[2rem] animate-pulse"></div>
+            <div key={i} className="h-80 bg-emerald-50/50 rounded-2xl animate-pulse" />
           ))}
         </div>
       ) : funds.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {funds.map(fund => (
-            <div key={fund.address} className="relative">
-              <FundCard
-                name={fund.projectName}
-                goal={fund.goal}
-                raised={fund.totalRaised}
-                creator={fund.creator}
-                deadline={fund.deadline}
-                contributors={fund.contributorCount}
-                onClick={() => navigate(`/fund/${fund.address}`)}
-              />
-            </div>
+            <FundCard
+              key={fund.address}
+              name={fund.projectName}
+              goal={fund.goal}
+              raised={fund.totalRaised}
+              creator={fund.creator}
+              deadline={fund.deadline}
+              contributors={fund.contributorCount}
+              onClick={() => navigate(`/fund/${fund.address}`)}
+            />
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-emerald-100 shadow-xl shadow-emerald-900/5 px-8">
-          <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-100/50">
-            <Plus className="w-10 h-10 text-emerald-500" />
+        <div className="text-center py-20 bg-white border border-emerald-50 rounded-3xl px-8 shadow-sm">
+          <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-6 text-emerald-200">
+            <Plus className="w-8 h-8" />
           </div>
-          <h3 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">No campaigns yet</h3>
-          <p className="text-emerald-900/40 mb-10 max-w-sm mx-auto font-bold uppercase tracking-widest text-xs leading-relaxed">
-            You haven't created any campaigns yet. Start your journey today!
+          <h3 className="text-2xl font-black text-emerald-950 mb-3 tracking-tight">Zero visions detected.</h3>
+          <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px] mb-10 max-w-xs mx-auto">
+            Ready to initiate your first blockchain crowdfunding campaign?
           </p>
           <button
             onClick={() => navigate('/create')}
-            className="px-10 py-4.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-xl shadow-emerald-600/20 transition-all active:scale-[0.98] text-lg"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl shadow-lg transition-all active:scale-95"
           >
-            Create your first Campaign
+            Launch First Vision <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       )}
     </div>
   );
 }
-

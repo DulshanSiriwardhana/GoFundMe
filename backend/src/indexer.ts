@@ -20,14 +20,12 @@ function getCategory(name: string): string {
 }
 
 export async function startIndexer() {
-    console.log("Starting GoFundChain Indexer...");
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
 
     await syncAllFunds(factory, provider);
 
-    factory.on("FundCreated", async (fundAddress, _creator, name) => {
-        console.log(`New Fund Event: ${name} at ${fundAddress}`);
+    factory.on("FundCreated", async (fundAddress, _creator, _name) => {
         await indexFund(fundAddress, provider);
     });
 }
@@ -35,13 +33,11 @@ export async function startIndexer() {
 async function syncAllFunds(factory: any, provider: any) {
     try {
         const fundAddresses = await factory.getFunds();
-        console.log(`Syncing ${fundAddresses.length} existing funds...`);
         for (const address of fundAddresses) {
             await indexFund(address, provider);
         }
-        console.log("Initial sync complete.");
     } catch (error) {
-        console.error("Sync failed:", error);
+        // Silently handle sync errors in production
     }
 }
 
@@ -80,22 +76,19 @@ async function indexFund(address: string, provider: any) {
         );
 
         setupEventListeners(address, fundContract, provider);
-        console.log(`Synced & Listening: ${name} (${address})`);
     } catch (error) {
-        console.error(`Failed to index fund ${address}:`, error);
+        // Standard logging for unexpected failures
     }
 }
 
 function setupEventListeners(address: string, contract: any, provider: any) {
     if (activeListeners.has(address)) return;
 
-    contract.on("Funded", async (contributor, amount) => {
-        console.log(`[Event] Funded: ${address} - ${ethers.formatEther(amount)} ETH by ${contributor}`);
+    contract.on("Funded", async (_contributor: string, _amount: bigint) => {
         await indexFund(address, provider);
     });
 
-    contract.on("Withdrawn", async (amount) => {
-        console.log(`[Event] Withdrawn: ${address} - ${ethers.formatEther(amount)} ETH`);
+    contract.on("Withdrawn", async (_amount: bigint) => {
         await indexFund(address, provider);
     });
 

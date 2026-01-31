@@ -205,6 +205,7 @@ export interface FundData {
   address: string;
   creator: string;
   projectName: string;
+  category?: string;
   goal: string;
   deadline: number;
   totalRaised: string;

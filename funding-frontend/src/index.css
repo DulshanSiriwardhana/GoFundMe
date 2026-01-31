@@ -16,12 +16,12 @@
 
 html,
 body {
-  background-color: #f0fdf4;
-  color: #014d40;
+  background-color: #f7fffb;
+  color: #012d26;
   font-family: 'Spectral', serif !important;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Ensure all form elements also use Spectral */
 input,
 button,
 select,
@@ -31,6 +31,40 @@ textarea {
 
 * {
   font-family: inherit;
+}
+
+.glass {
+  @apply backdrop-blur-lg bg-white/80 border border-white/40 shadow-lg rounded-2xl;
+}
+
+.glass-dark {
+  @apply backdrop-blur-lg bg-emerald-950/60 border border-white/10 shadow-xl rounded-2xl;
+}
+
+.premium-gradient {
+  @apply bg-linear-to-br from-emerald-900 to-emerald-800;
+}
+
+.premium-text-gradient {
+  @apply bg-clip-text text-transparent bg-linear-to-r from-emerald-950 to-emerald-700;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 @keyframes slide-in {
@@ -49,27 +83,34 @@ textarea {
   animation: slide-in 0.3s ease-out;
 }
 
-/* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f0fdf4;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #014d40;
+  background: #014d4033;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #064e3b;
+  background: #014d40;
 }
 
-/* Firefox support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #014d40 #f0fdf4;
+  scrollbar-color: #014d4033 transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
