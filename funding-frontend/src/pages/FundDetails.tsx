@@ -143,18 +143,18 @@ export default function FundDetails() {
                     </div>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-emerald-950 leading-tight tracking-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-emerald-950 leading-tight tracking-tight">
                     {fund.projectName}
                 </h1>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 pt-2">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 pt-1">
                     <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${categoryConfig.gradient} flex items-center justify-center text-white font-black text-sm shadow-sm`}>
+                        <div className={`w-9 h-9 rounded-lg bg-linear-to-br ${categoryConfig.gradient} flex items-center justify-center text-white font-black text-xs shadow-sm`}>
                             {fund.creator.substring(2, 4).toUpperCase()}
                         </div>
                         <div>
-                            <p className="text-[8px] font-black text-emerald-800/40 uppercase tracking-widest">Creator</p>
-                            <p className="font-bold text-emerald-950">{formatAddress(fund.creator)}</p>
+                            <p className="text-[7px] font-black text-emerald-800/40 uppercase tracking-widest">Creator</p>
+                            <p className="text-sm font-bold text-emerald-950">{formatAddress(fund.creator)}</p>
                         </div>
                     </div>
                     <div className="hidden sm:block h-6 w-px bg-emerald-100" />

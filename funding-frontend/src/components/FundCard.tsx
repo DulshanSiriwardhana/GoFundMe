@@ -63,26 +63,26 @@ export default function FundCard({
         </div>
       </div>
 
-      <div className="p-6 flex flex-col flex-1 space-y-5">
-        <div className="space-y-2">
+      <div className="p-5 flex flex-col flex-1 space-y-4">
+        <div className="space-y-1.5">
           <div className="flex justify-between items-start gap-4">
-            <h3 className="text-xl font-black text-emerald-950 leading-tight group-hover:text-emerald-600 transition-colors">
+            <h3 className="text-lg font-black text-emerald-950 leading-tight group-hover:text-emerald-600 transition-colors">
               {name}
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-900/30 uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-[9px] font-bold text-emerald-900/30 uppercase tracking-widest">
             <span>By {formatAddress(creator)}</span>
           </div>
         </div>
 
-        <div className="space-y-4 pt-2">
-          <div className="space-y-2">
+        <div className="space-y-3 pt-1">
+          <div className="space-y-1.5">
             <div className="flex justify-between items-end">
               <div className="flex items-baseline gap-1">
-                <span className="text-xl font-black text-emerald-950">{parseFloat(raised).toFixed(3)}</span>
-                <span className="text-[10px] font-black text-emerald-600">ETH</span>
+                <span className="text-lg font-black text-emerald-950">{parseFloat(raised).toFixed(3)}</span>
+                <span className="text-[9px] font-black text-emerald-600">ETH</span>
               </div>
-              <span className="text-[10px] font-black text-emerald-900/30 uppercase tracking-widest">
+              <span className="text-[9px] font-black text-emerald-900/30 uppercase tracking-widest">
                 {progress.toFixed(0)}% of {goal} ETH
               </span>
             </div>

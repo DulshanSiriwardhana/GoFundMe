@@ -91,13 +91,13 @@ export default function MyFunds() {
 
   return (
     <div className="space-y-16 pb-24">
-      <section className="relative overflow-hidden rounded-3xl bg-emerald-950 p-10 md:p-16 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-10">
-        <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[10px] font-black uppercase tracking-widest">
+      <section className="relative overflow-hidden rounded-3xl bg-emerald-950 p-8 md:p-12 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[9px] font-black uppercase tracking-widest">
             Mission Control
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight leading-none">My <span className="text-emerald-400 italic">Visions.</span></h1>
-          <p className="text-emerald-100/40 font-medium max-w-md">
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">My <span className="text-emerald-400 italic">Visions.</span></h1>
+          <p className="text-sm text-emerald-100/40 font-medium max-w-md">
             Manage and track the pulse of your on-chain campaigns.
           </p>
         </div>

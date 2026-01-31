@@ -64,14 +64,14 @@ export default function CreateFund() {
   return (
     <div className="max-w-4xl mx-auto py-10 md:py-20 px-4">
       <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-        <div className="space-y-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest border border-emerald-100">
-            <Sparkles className="w-3 h-3" /> Vision Builder
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[8px] font-black uppercase tracking-widest border border-emerald-100">
+            <Sparkles className="w-2.5 h-2.5" /> Vision Builder
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight">
+          <h1 className="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-tight">
             Launch your <span className="text-emerald-600 italic">Vision.</span>
           </h1>
-          <p className="text-lg text-emerald-900/50 font-medium leading-relaxed max-w-sm">
+          <p className="text-base text-emerald-900/50 font-medium leading-relaxed max-w-sm">
             Turn your ideas into decentralized reality. Secure funding globally with zero intermediaries.
           </p>
 

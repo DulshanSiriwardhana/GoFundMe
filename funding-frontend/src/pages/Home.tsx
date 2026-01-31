@@ -115,21 +115,21 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-full h-full bg-linear-to-bl from-emerald-400/10 via-transparent to-transparent" />
 
         <div className="relative z-10 px-6 py-16 sm:px-12 lg:px-20 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          <div className="flex-1 space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[10px] font-black uppercase tracking-widest">
-              <Sparkles className="w-3.5 h-3.5" /> Empowering the Future
+          <div className="flex-1 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[9px] font-black uppercase tracking-widest">
+              <Sparkles className="w-3 h-3" /> Empowering the Future
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.1] text-white">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] text-white">
               Launch your <br className="hidden sm:block" />
               <span className="text-emerald-400 italic">Visionary Idea.</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-emerald-100/60 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
+            <p className="text-base sm:text-lg text-emerald-100/60 max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
               Global, secure, and transparent protocol for decentralized crowdfunding.
             </p>
 
-            <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 pt-2">
               <Link to="/create" className="group px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-500 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
                 Start a Campaign <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -159,11 +159,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="explore" className="space-y-10 px-2 sm:px-0">
+      <section id="explore" className="space-y-8 px-2 sm:px-0">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-          <div className="space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-black text-emerald-950 tracking-tight italic">Explore Visions</h2>
-            <p className="text-emerald-900/40 font-black uppercase tracking-widest text-[10px]">
+          <div className="space-y-3">
+            <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight italic">Explore Visions</h2>
+            <p className="text-emerald-900/40 font-black uppercase tracking-widest text-[9px]">
               Active campaigns on the blockchain
             </p>
           </div>
