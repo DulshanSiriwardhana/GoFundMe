@@ -147,14 +147,14 @@ export default function FundDetails() {
                     {fund.projectName}
                 </h1>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 pt-1">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 pt-2">
                     <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-lg bg-linear-to-br ${categoryConfig.gradient} flex items-center justify-center text-white font-black text-xs shadow-sm`}>
+                        <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${categoryConfig.gradient} flex items-center justify-center text-white font-black text-sm shadow-sm`}>
                             {fund.creator.substring(2, 4).toUpperCase()}
                         </div>
                         <div>
-                            <p className="text-[7px] font-black text-emerald-800/40 uppercase tracking-widest">Creator</p>
-                            <p className="text-sm font-bold text-emerald-950">{formatAddress(fund.creator)}</p>
+                            <p className="text-[10px] font-black text-emerald-800/60 uppercase tracking-widest">Creator</p>
+                            <p className="font-bold text-emerald-950">{formatAddress(fund.creator)}</p>
                         </div>
                     </div>
                     <div className="hidden sm:block h-6 w-px bg-emerald-100" />
@@ -163,7 +163,7 @@ export default function FundDetails() {
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[8px] font-black text-emerald-800/40 uppercase tracking-widest">Time Remaining</p>
+                            <p className="text-[10px] font-black text-emerald-800/60 uppercase tracking-widest">Time Remaining</p>
                             <p className="font-bold text-emerald-950">{timeLeft} Days</p>
                         </div>
                     </div>
@@ -184,8 +184,8 @@ export default function FundDetails() {
                     </div>
 
                     <div className="space-y-6">
-                        <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic">Campaign Vision</h3>
-                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4">
+                        <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic border-l-4 border-emerald-500 pl-4">Campaign Vision</h3>
+                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base">
                             <p>
                                 This campaign is powered by the GoFundChain protocol, ensuring every donation is transparently handled by on-chain smart contracts.
                             </p>
@@ -199,22 +199,22 @@ export default function FundDetails() {
                 <aside className="lg:col-span-4 space-y-6">
                     <Card className="p-8 border border-emerald-100 rounded-2xl bg-white shadow-sm overflow-hidden relative">
                         <div className="space-y-8">
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-black text-emerald-800/40 uppercase tracking-widest">Funding Progress</p>
+                            <div className="space-y-7">
+                                <div className="space-y-3">
+                                    <p className="text-[11px] font-black text-emerald-800/60 uppercase tracking-widest">Funding Progress</p>
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-5xl font-black text-emerald-950 tracking-tighter">
                                             {parseFloat(fund.totalRaised).toFixed(3)}
                                         </span>
                                         <span className="text-lg font-black text-emerald-500 uppercase tracking-tighter">ETH</span>
                                     </div>
-                                    <div className="flex justify-between items-center text-[9px] font-black text-emerald-800/40 uppercase tracking-widest pt-1">
+                                    <div className="flex justify-between items-center text-[10px] font-black text-emerald-800/60 uppercase tracking-widest pt-1">
                                         <span>{progress.toFixed(1)}% complete</span>
                                         <span>Target: {fund.goal} ETH</span>
                                     </div>
                                 </div>
 
-                                <div className="w-full h-2 bg-emerald-50 rounded-full overflow-hidden border border-emerald-100/50">
+                                <div className="w-full h-2 bg-emerald-100 rounded-full overflow-hidden border border-emerald-100/50">
                                     <div
                                         className={`h-full rounded-full bg-linear-to-r ${categoryConfig.gradient} transition-all duration-1000 ease-out`}
                                         style={{ width: `${progress}%` }}

@@ -159,16 +159,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="explore" className="space-y-8 px-2 sm:px-0">
+      <section id="explore" className="space-y-10 px-4 sm:px-0">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
           <div className="space-y-3">
             <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight italic">Explore Visions</h2>
-            <p className="text-emerald-900/40 font-black uppercase tracking-widest text-[9px]">
+            <p className="text-emerald-900/50 font-black uppercase tracking-widest text-[10px]">
               Active campaigns on the blockchain
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:max-w-2xl">
+          <div className="flex flex-col sm:flex-row gap-4 w-full lg:max-w-2xl">
             <div className="relative flex-1">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
               <input
@@ -176,10 +176,10 @@ export default function Home() {
                 placeholder="Search campaigns..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:border-emerald-500 focus:outline-none shadow-sm transition-all text-emerald-950 font-bold placeholder:text-emerald-900/20"
+                className="w-full pl-12 pr-6 py-4 bg-white border border-emerald-100 rounded-2xl focus:border-emerald-500 focus:outline-none shadow-sm transition-all text-emerald-950 font-bold placeholder:text-emerald-900/40"
               />
             </div>
-            <button className="px-6 py-4 bg-white border border-emerald-100 text-emerald-950 rounded-2xl font-black flex items-center justify-center gap-2 hover:border-emerald-500 transition-all shadow-sm active:scale-95">
+            <button className="px-8 py-4 bg-white border border-emerald-100 text-emerald-950 rounded-2xl font-black flex items-center justify-center gap-2 hover:border-emerald-500 hover:bg-emerald-50 transition-all shadow-sm active:scale-95 whitespace-nowrap">
               <Filter className="w-4 h-4 text-emerald-400" />
               Filter
             </button>

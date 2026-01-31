@@ -12,12 +12,17 @@
   --color-primary: #014d40;
   --color-secondary: #f0fdf4;
   --color-accent: #fbbf24;
+  /* Standardized contrast levels */
+  --color-contrast-low: rgb(1 77 64 / 0.4);
+  --color-contrast-mid: rgb(1 77 64 / 0.6);
+  --color-contrast-high: rgb(1 77 64 / 0.8);
 }
 
 html,
 body {
-  background-color: #f7fffb;
-  color: #012d26;
+  background-color: #f8fafc;
+  /* More balanced neutral background */
+  color: #014d40;
   font-family: 'Spectral', serif !important;
   -webkit-font-smoothing: antialiased;
 }
@@ -34,19 +39,19 @@ textarea {
 }
 
 .glass {
-  @apply backdrop-blur-lg bg-white/80 border border-white/40 shadow-lg rounded-2xl;
+  @apply backdrop-blur-lg bg-white/80 border border-white/20 shadow-lg rounded-2xl;
 }
 
 .glass-dark {
-  @apply backdrop-blur-lg bg-emerald-950/60 border border-white/10 shadow-xl rounded-2xl;
+  @apply backdrop-blur-lg bg-emerald-950/70 border border-white/5 shadow-xl rounded-2xl;
 }
 
 .premium-gradient {
-  @apply bg-linear-to-br from-emerald-900 to-emerald-800;
+  @apply bg-linear-to-br from-emerald-900 via-emerald-800 to-emerald-950;
 }
 
 .premium-text-gradient {
-  @apply bg-clip-text text-transparent bg-linear-to-r from-emerald-950 to-emerald-700;
+  @apply bg-clip-text text-transparent bg-linear-to-r from-emerald-950 via-emerald-800 to-emerald-700;
 }
 
 @keyframes float {

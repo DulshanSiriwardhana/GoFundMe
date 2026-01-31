@@ -63,30 +63,30 @@ export default function FundCard({
         </div>
       </div>
 
-      <div className="p-5 flex flex-col flex-1 space-y-4">
+      <div className="p-6 flex flex-col flex-1 space-y-4">
         <div className="space-y-1.5">
           <div className="flex justify-between items-start gap-4">
             <h3 className="text-lg font-black text-emerald-950 leading-tight group-hover:text-emerald-600 transition-colors">
               {name}
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-bold text-emerald-900/30 uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-900/50 uppercase tracking-widest">
             <span>By {formatAddress(creator)}</span>
           </div>
         </div>
 
-        <div className="space-y-3 pt-1">
+        <div className="space-y-4 pt-1">
           <div className="space-y-1.5">
             <div className="flex justify-between items-end">
               <div className="flex items-baseline gap-1">
                 <span className="text-lg font-black text-emerald-950">{parseFloat(raised).toFixed(3)}</span>
-                <span className="text-[9px] font-black text-emerald-600">ETH</span>
+                <span className="text-[10px] font-black text-emerald-600">ETH</span>
               </div>
-              <span className="text-[9px] font-black text-emerald-900/30 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-emerald-900/50 uppercase tracking-widest">
                 {progress.toFixed(0)}% of {goal} ETH
               </span>
             </div>
-            <div className="w-full h-1.5 bg-emerald-50 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-emerald-100 rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full bg-linear-to-r ${categoryConfig.gradient} transition-all duration-1000 ease-out`}
                 style={{ width: `${progress}%` }}
@@ -96,20 +96,20 @@ export default function FundCard({
 
           <div className="grid grid-cols-2 gap-4 pt-2">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100/50">
                 <Clock className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[8px] font-black text-emerald-900/30 uppercase tracking-widest">Ends In</span>
+                <span className="text-[8px] font-black text-emerald-900/40 uppercase tracking-widest">Ends In</span>
                 <span className="text-[10px] font-black text-emerald-950">{timeLeft} Days</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100/50">
                 <Users className="w-3.5 h-3.5" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[8px] font-black text-emerald-900/30 uppercase tracking-widest">Backers</span>
+                <span className="text-[8px] font-black text-emerald-900/40 uppercase tracking-widest">Backers</span>
                 <span className="text-[10px] font-black text-emerald-950">{contributors}</span>
               </div>
             </div>
