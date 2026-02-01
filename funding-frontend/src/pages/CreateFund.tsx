@@ -53,7 +53,7 @@ export default function CreateFund() {
           </div>
           <div>
             <h2 className="text-3xl font-black text-emerald-950 italic">Authentication Required.</h2>
-            <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px] mt-2">Connect your wallet to initiate a vision</p>
+            <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px] mt-2">Connect your wallet to initiate a fund</p>
           </div>
           <button onClick={() => navigate('/')} className="px-8 py-4 bg-emerald-600 text-white font-black rounded-xl shadow-lg active:scale-95">Go Back</button>
         </div>
@@ -67,11 +67,11 @@ export default function CreateFund() {
         <div className="space-y-8">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[8px] font-black uppercase tracking-widest border border-emerald-100">
-              <Sparkles className="w-2.5 h-2.5" /> Vision Builder
+              <Sparkles className="w-2.5 h-2.5" /> Fund Builder
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-emerald-950 tracking-tight leading-[1.1]">
               Launch your <br />
-              <span className="text-emerald-600 italic">Vision.</span>
+              <span className="text-emerald-600 italic">Fund.</span>
             </h1>
             <p className="text-base md:text-lg text-emerald-900/50 font-medium leading-relaxed max-w-md">
               Turn your ideas into decentralized reality. Secure funding globally with zero intermediaries.
@@ -109,7 +109,7 @@ export default function CreateFund() {
                   <input
                     required
                     type="text"
-                    placeholder="Enter vision name..."
+                    placeholder="Enter fund name..."
                     className="w-full px-5 py-4 bg-emerald-50/50 border border-emerald-100 rounded-xl text-emerald-950 font-bold focus:border-emerald-500 focus:outline-none transition-all placeholder:text-emerald-900/30"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -169,7 +169,7 @@ export default function CreateFund() {
             <div className="mt-8 p-5 bg-amber-50/50 border border-amber-100 rounded-xl flex items-start gap-4">
               <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
               <p className="text-[10px] text-amber-900/70 font-black uppercase tracking-widest leading-loose">
-                Note: Deployment requires a small transaction fee (Gas). This vision will be permanent on the blockchain.
+                Note: Deployment requires a small transaction fee (Gas). This fund will be permanent on the blockchain.
               </p>
             </div>
           </Card>

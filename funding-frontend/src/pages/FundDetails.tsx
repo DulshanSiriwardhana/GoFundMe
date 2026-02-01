@@ -78,7 +78,7 @@ export default function FundDetails() {
             const contract = new ethers.Contract(fund.address, FUND_ABI, signer);
             const tx = await contract.deposit({ value: ethers.parseEther(amount) });
             await tx.wait();
-            showAlert("success", "Vision supported! Donation successful.");
+            showAlert("success", "Fund supported! Donation successful.");
             loadFundData();
             setAmount("");
         } catch (error: any) {
@@ -184,13 +184,13 @@ export default function FundDetails() {
                     </div>
 
                     <div className="space-y-6">
-                        <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic border-l-4 border-emerald-500 pl-4">Campaign Vision</h3>
+                        <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic border-l-4 border-emerald-500 pl-4">Campaign Details</h3>
                         <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base">
                             <p>
                                 This campaign is powered by the GoFundChain protocol, ensuring every donation is transparently handled by on-chain smart contracts.
                             </p>
                             <p>
-                                Contributors are part of a global community supporting creative and charitable initiatives without intermediaries. Your participation directly fuels the creator's vision.
+                                Contributors are part of a global community supporting creative and charitable initiatives without intermediaries. Your participation directly fuels the creator's project.
                             </p>
                         </div>
                     </div>

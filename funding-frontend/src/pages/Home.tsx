@@ -122,7 +122,7 @@ export default function Home() {
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] text-white">
               Launch your <br className="hidden sm:block" />
-              <span className="text-emerald-400 italic">Visionary Idea.</span>
+              <span className="text-emerald-400 italic">Fund Idea.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-emerald-100/60 max-w-lg mx-auto lg:mx-0 font-medium leading-relaxed">
@@ -162,7 +162,7 @@ export default function Home() {
       <section id="explore" className="space-y-10 px-4 sm:px-0">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
           <div className="space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight italic">Explore Visions</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight italic">Explore Funds</h2>
             <p className="text-emerald-900/50 font-black uppercase tracking-widest text-[10px]">
               Active campaigns on the blockchain
             </p>
@@ -228,11 +228,11 @@ export default function Home() {
             <Globe className="w-12 h-12 text-emerald-100 mx-auto mb-6" />
             <h3 className="text-2xl font-black text-emerald-950 mb-3 tracking-tight">No results.</h3>
             <p className="text-emerald-900/40 max-w-xs mx-auto font-bold uppercase tracking-widest text-[10px] leading-relaxed mb-8">
-              Adjust your search or category filters to discover more visions.
+              Adjust your search or category filters to discover more funds.
             </p>
             {!searchQuery && (
               <Link to="/create" className="inline-flex items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg transition-all active:scale-95">
-                Launch your own Vision <ArrowRight className="w-5 h-5" />
+                Launch your own Fund <ArrowRight className="w-5 h-5" />
               </Link>
             )}
           </div>

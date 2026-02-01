@@ -76,7 +76,7 @@ export default function MyFunds() {
         <div className="space-y-2">
           <h2 className="text-3xl font-black text-emerald-950 italic">Locked Dashboard.</h2>
           <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">
-            Please connect your wallet to view your visions.
+            Please connect your wallet to view your funds.
           </p>
         </div>
         <button
@@ -96,7 +96,7 @@ export default function MyFunds() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-emerald-300 text-[10px] font-black uppercase tracking-widest">
             Mission Control
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">My <span className="text-emerald-400 italic">Visions.</span></h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none">My <span className="text-emerald-400 italic">Funds.</span></h1>
           <p className="text-base text-emerald-100/40 font-medium max-w-md">
             Manage and track the pulse of your on-chain campaigns.
           </p>
@@ -106,7 +106,7 @@ export default function MyFunds() {
           onClick={() => navigate('/create')}
           className="px-10 py-5 bg-emerald-500 text-emerald-950 rounded-xl font-black hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/10 active:scale-95 flex items-center gap-3"
         >
-          <Plus className="w-5 h-5" /> Launch New Vision
+          <Plus className="w-5 h-5" /> Launch New Fund
         </button>
       </section>
 
@@ -136,7 +136,7 @@ export default function MyFunds() {
           <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-6 text-emerald-200">
             <Plus className="w-8 h-8" />
           </div>
-          <h3 className="text-2xl font-black text-emerald-950 mb-3 tracking-tight">Zero visions detected.</h3>
+          <h3 className="text-2xl font-black text-emerald-950 mb-3 tracking-tight">Zero funds detected.</h3>
           <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px] mb-10 max-w-xs mx-auto">
             Ready to initiate your first blockchain crowdfunding campaign?
           </p>
@@ -144,7 +144,7 @@ export default function MyFunds() {
             onClick={() => navigate('/create')}
             className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl shadow-lg transition-all active:scale-95"
           >
-            Launch First Vision <ArrowRight className="w-5 h-5" />
+            Launch First Fund <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       )}

@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     const navLinks = [
         { name: "Home", path: "/", icon: <HomeIcon className="w-4 h-4" /> },
         { name: "Create Fund", path: "/create", icon: <Plus className="w-4 h-4" /> },
-        { name: "My Dashboard", path: "/my-funds", icon: <LayoutDashboard className="w-4 h-4" /> },
+        { name: "My Funds", path: "/my-funds", icon: <LayoutDashboard className="w-4 h-4" /> },
     ];
 
     const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
