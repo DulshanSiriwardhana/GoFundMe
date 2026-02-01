@@ -52,6 +52,13 @@ async function indexFund(address: string, provider: any) {
             // Field doesn't exist on older versions
         }
 
+        let imageUri = "";
+        try {
+            imageUri = await fundContract.imageUri();
+        } catch (e) {
+            // Field doesn't exist on older versions
+        }
+
         const [name, creator, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
                 fundContract.projectName(),
@@ -70,6 +77,7 @@ async function indexFund(address: string, provider: any) {
                 address,
                 projectName: name,
                 description,
+                imageUri,
                 creator,
                 category: getCategory(name),
                 goal: ethers.formatEther(goal),

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 interface FundCardProps {
   name: string;
   description?: string;
+  imageUri?: string;
   goal: string;
   raised: string;
   creator: string;
@@ -16,6 +17,7 @@ interface FundCardProps {
 export default function FundCard({
   name,
   description,
+  imageUri,
   goal,
   raised,
   creator,
@@ -45,13 +47,26 @@ export default function FundCard({
       onClick={onClick}
       className="group relative flex flex-col bg-white border border-emerald-50 rounded-2xl overflow-hidden hover:border-emerald-200 hover:shadow-xl transition-all duration-300 cursor-pointer h-full"
     >
-      <div className={`aspect-video relative overflow-hidden bg-linear-to-br ${categoryConfig.gradient} group-hover:scale-[1.02] transition-transform duration-500`}>
-        <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-3xl font-black">
-            {name.charAt(0)}
+      <div className={`aspect-video relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500`}>
+        {imageUri ? (
+          <img
+            src={imageUri}
+            alt={name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop";
+            }}
+          />
+        ) : (
+          <div className={`w-full h-full bg-linear-to-br ${categoryConfig.gradient} opacity-90`}>
+            <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-3xl font-black">
+                {name.charAt(0)}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
         <div className="absolute top-4 left-4">
           <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-md border flex items-center gap-1.5 ${categoryConfig.bg} ${categoryConfig.color} ${categoryConfig.border}`}>
             <CategoryIcon className="w-3 h-3" />

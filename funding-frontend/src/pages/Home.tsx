@@ -45,6 +45,13 @@ export default function Home() {
             // Field not present in this version
           }
 
+          let imageUri = "";
+          try {
+            imageUri = await contract.imageUri();
+          } catch (e) {
+            // Field not present in this version
+          }
+
           const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
               contract.creator(),
@@ -62,6 +69,7 @@ export default function Home() {
             creator,
             projectName,
             description,
+            imageUri,
             category: "Community",
             goal: ethers.formatEther(goal),
             deadline: Number(deadline),

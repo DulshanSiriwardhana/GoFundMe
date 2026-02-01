@@ -22,6 +22,7 @@ export const FACTORY_ABI = [
     inputs: [
       { internalType: "string", name: "name", type: "string" },
       { internalType: "string", name: "description", type: "string" },
+      { internalType: "string", name: "imageUri", type: "string" },
       { internalType: "uint256", name: "goal", type: "uint256" },
       { internalType: "uint256", name: "duration", type: "uint256" },
     ],
@@ -50,10 +51,11 @@ export const FUND_ABI = [
   {
     inputs: [
       { internalType: "address", name: "_creator", type: "address" },
-      { internalType: "string", name: "_name", type: "string" },
-      { internalType: "string", name: "_description", type: "string" },
-      { internalType: "uint256", name: "_goal", type: "uint256" },
-      { internalType: "uint256", name: "_duration", type: "uint256" },
+      { indexed: false, internalType: "string", name: "_name", type: "string" },
+      { indexed: false, internalType: "string", name: "_description", type: "string" },
+      { indexed: false, internalType: "string", name: "_imageUri", type: "string" },
+      { indexed: false, internalType: "uint256", name: "_goal", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "_duration", type: "uint256" },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -99,6 +101,13 @@ export const FUND_ABI = [
   {
     inputs: [],
     name: "description",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "imageUri",
     outputs: [{ internalType: "string", name: "", type: "string" }],
     stateMutability: "view",
     type: "function",
@@ -216,6 +225,7 @@ export interface FundData {
   creator: string;
   projectName: string;
   description: string;
+  imageUri: string;
   category?: string;
   goal: string;
   deadline: number;

@@ -44,6 +44,13 @@ export default function FundDetails() {
                 console.warn("Description field not found on this contract version");
             }
 
+            let imageUri = "";
+            try {
+                imageUri = await contract.imageUri();
+            } catch (err) {
+                console.warn("imageUri field not found on this contract version");
+            }
+
             const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
                 await Promise.all([
                     contract.creator(),
@@ -61,6 +68,7 @@ export default function FundDetails() {
                 creator,
                 projectName,
                 description,
+                imageUri,
                 category: backendData?.category || "Community",
                 goal: ethers.formatEther(goal),
                 deadline: Number(deadline),
@@ -181,15 +189,27 @@ export default function FundDetails() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
                 <main className="lg:col-span-8 space-y-10">
-                    <div className={`aspect-video rounded-2xl bg-linear-to-br ${categoryConfig.gradient} p-0.5 shadow-lg`}>
-                        <div className="w-full h-full rounded-[0.9rem] bg-white flex flex-col items-center justify-center relative overflow-hidden group">
-                            <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-5xl font-black border border-emerald-100">
-                                {fund.projectName.charAt(0)}
+                    <div className="aspect-video rounded-3xl overflow-hidden relative group shadow-2xl shadow-emerald-950/20 border border-emerald-100">
+                        {fund.imageUri ? (
+                            <img
+                                src={fund.imageUri}
+                                alt={fund.projectName}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop";
+                                }}
+                            />
+                        ) : (
+                            <div className={`w-full h-full bg-linear-to-br ${categoryConfig.gradient} flex flex-col items-center justify-center`}>
+                                <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-5xl font-black shadow-inner">
+                                    {fund.projectName.charAt(0)}
+                                </div>
                             </div>
-                            <button className="absolute bottom-6 right-6 p-3 bg-white rounded-xl shadow-md border border-emerald-50 text-emerald-600 hover:scale-105 transition-all">
-                                <Share2 className="w-5 h-5" />
-                            </button>
-                        </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 via-transparent to-transparent opacity-60" />
+                        <button className="absolute bottom-6 right-6 p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 text-emerald-600 hover:scale-110 active:scale-95 transition-all z-10">
+                            <Share2 className="w-5 h-5" />
+                        </button>
                     </div>
 
                     <div className="space-y-6">

@@ -61,7 +61,16 @@ Create a `.env` file in the `funding-frontend` folder:
 VITE_FACTORY_ADDRESS=PASTE_YOUR_FACTORY_ADDRESS_HERE
 VITE_API_BASE_URL=http://localhost:3001
 VITE_ADMIN_ADDRESS=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+VITE_PINATA_JWT=PASTE_YOUR_PINATA_JWT_HERE
 ```
+
+### 5.1 How to get a Pinata JWT:
+1.  Go to [Pinata.cloud](https://www.pinata.cloud/) and sign up/log in.
+2.  Navigate to **API Keys** in the sidebar.
+3.  Click **New Key**.
+4.  Enable **Admin** permissions (or at least `pinFileToIPFS`).
+5.  Give it a name and click **Create Key**.
+6.  **Copy the JWT string** (the very long one). This is your `VITE_PINATA_JWT`.
 Start the frontend:
 ```bash
 yarn dev

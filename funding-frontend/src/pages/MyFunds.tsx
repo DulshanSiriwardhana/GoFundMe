@@ -34,7 +34,14 @@ export default function MyFunds() {
               // Field not present in this version
             }
 
-            const [projectName, goal, deadline, totalRaised, goalReached, contributorCount] =
+            let imageUri = "";
+            try {
+              imageUri = await contract.imageUri();
+            } catch (e) {
+              // Field not present in this version
+            }
+
+            const [projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
               await Promise.all([
                 contract.projectName(),
                 contract.goal(),
@@ -42,6 +49,7 @@ export default function MyFunds() {
                 contract.totalRaised(),
                 contract.goalReached(),
                 contract.contributorCount(),
+                contract.requestCount()
               ]);
 
             myFunds.push({
@@ -49,13 +57,14 @@ export default function MyFunds() {
               creator,
               projectName,
               description,
+              imageUri,
               category: "Community",
               goal: ethers.formatEther(goal),
               deadline: Number(deadline),
               totalRaised: ethers.formatEther(totalRaised),
               goalReached,
               contributorCount: Number(contributorCount),
-              requestCount: 0
+              requestCount: Number(requestCount)
             });
           }
         } catch (err) {
