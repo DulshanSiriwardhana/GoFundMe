@@ -174,9 +174,12 @@ export default function AdminDashboard() {
                                     <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 font-black text-xs border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                                         {fund.projectName.charAt(0)}
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="flex-1 min-w-0">
                                         <h5 className="font-bold text-emerald-950 text-sm truncate">{fund.projectName}</h5>
-                                        <p className="text-[9px] font-black text-emerald-900/30 uppercase tracking-widest leading-none mt-1">
+                                        <p className="text-[10px] text-emerald-900/40 truncate mt-0.5">
+                                            {fund.description || "No description available."}
+                                        </p>
+                                        <p className="text-[9px] font-black text-emerald-900/30 uppercase tracking-widest leading-none mt-1.5">
                                             {fund.totalRaised} / {fund.goal} ETH
                                         </p>
                                     </div>

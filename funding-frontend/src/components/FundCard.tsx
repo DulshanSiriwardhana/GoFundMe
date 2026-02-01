@@ -3,6 +3,7 @@ import { useMemo } from "react";
 
 interface FundCardProps {
   name: string;
+  description?: string;
   goal: string;
   raised: string;
   creator: string;
@@ -14,6 +15,7 @@ interface FundCardProps {
 
 export default function FundCard({
   name,
+  description,
   goal,
   raised,
   creator,
@@ -73,6 +75,11 @@ export default function FundCard({
           <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-900/50 uppercase tracking-widest">
             <span>By {formatAddress(creator)}</span>
           </div>
+          {description && (
+            <p className="text-xs text-emerald-900/60 font-medium line-clamp-2 leading-relaxed pt-1">
+              {description}
+            </p>
+          )}
         </div>
 
         <div className="space-y-4 pt-1">

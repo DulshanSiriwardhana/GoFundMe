@@ -34,11 +34,19 @@ export default function FundDetails() {
             }
 
             const contract = new ethers.Contract(address, FUND_ABI, provider);
-            const [creator, projectName, description, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
+
+            // Fetch description separately to handle older contracts that might not have it
+            let description = "";
+            try {
+                description = await contract.description();
+            } catch (err) {
+                console.warn("Description field not found on this contract version");
+            }
+
+            const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
                 await Promise.all([
                     contract.creator(),
                     contract.projectName(),
-                    contract.description(),
                     contract.goal(),
                     contract.deadline(),
                     contract.totalRaised(),

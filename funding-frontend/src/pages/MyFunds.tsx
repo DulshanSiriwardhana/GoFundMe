@@ -26,6 +26,13 @@ export default function MyFunds() {
           const creator = await contract.creator();
 
           if (creator.toLowerCase() === account.toLowerCase()) {
+            let description = "";
+            try {
+              description = await contract.description();
+            } catch (e) {
+              // Field not present in this version
+            }
+
             const [projectName, goal, deadline, totalRaised, goalReached, contributorCount] =
               await Promise.all([
                 contract.projectName(),
@@ -40,6 +47,7 @@ export default function MyFunds() {
               address,
               creator,
               projectName,
+              description,
               category: "Community",
               goal: ethers.formatEther(goal),
               deadline: Number(deadline),
@@ -122,6 +130,7 @@ export default function MyFunds() {
             <FundCard
               key={fund.address}
               name={fund.projectName}
+              description={fund.description}
               goal={fund.goal}
               raised={fund.totalRaised}
               creator={fund.creator}
