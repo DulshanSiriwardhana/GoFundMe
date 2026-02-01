@@ -74,7 +74,8 @@ export default function Home() {
   const loadFunds = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/funds?search=${searchQuery}`);
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+      const response = await fetch(`${apiBaseUrl}/api/funds?search=${searchQuery}`);
       if (response.ok) {
         const data = await response.json();
         setFunds(data.funds);

@@ -39,7 +39,8 @@ export default function AdminDashboard() {
     useEffect(() => {
         async function fetchStats() {
             try {
-                const response = await fetch("http://localhost:3001/api/admin/stats");
+                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+                const response = await fetch(`${apiBaseUrl}/api/admin/stats`);
                 if (response.ok) {
                     const data = await response.json();
                     setStats(data);
