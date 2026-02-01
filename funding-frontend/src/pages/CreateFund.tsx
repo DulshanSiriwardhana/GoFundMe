@@ -21,7 +21,7 @@ export default function CreateFund() {
     duration: "30"
   });
 
-  const truncateFileName = (name: string, limit = 40) => {
+  const truncateFileName = (name: string, limit = 20) => {
     if (name.length <= limit) return name;
     const lastDot = name.lastIndexOf('.');
     const ext = lastDot !== -1 ? name.substring(lastDot) : '';
