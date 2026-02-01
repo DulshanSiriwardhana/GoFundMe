@@ -19,8 +19,8 @@ export default function Home() {
 
   const getReadProvider = useCallback(() => {
     if (provider) return provider;
-    if (typeof window.ethereum !== 'undefined') {
-      return new ethers.BrowserProvider(window.ethereum);
+    if (typeof (window as any).ethereum !== 'undefined') {
+      return new ethers.BrowserProvider((window as any).ethereum);
     }
     return null;
   }, [provider]);
