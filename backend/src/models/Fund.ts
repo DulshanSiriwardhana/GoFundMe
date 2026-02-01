@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const FundSchema = new mongoose.Schema({
     address: { type: String, required: true, unique: true, index: true },
     projectName: { type: String, required: true, index: true },
+    description: { type: String, default: "" },
     creator: { type: String, required: true, index: true },
     category: { type: String, default: "Community", index: true },
     goal: { type: String, required: true },

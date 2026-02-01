@@ -10,10 +10,11 @@ contract FundFactory {
 
     function createFund(
         string memory name,
+        string memory description,
         uint goal,
         uint duration
     ) public {
-        Fund fund = new Fund(msg.sender, name, goal, duration);
+        Fund fund = new Fund(msg.sender, name, description, goal, duration);
         deployedFunds.push(address(fund));
 
         emit FundCreated(address(fund), msg.sender, name);

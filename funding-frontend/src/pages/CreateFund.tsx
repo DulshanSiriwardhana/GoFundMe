@@ -14,6 +14,7 @@ export default function CreateFund() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    description: "",
     goal: "",
     duration: "30"
   });
@@ -31,7 +32,7 @@ export default function CreateFund() {
       const goalWei = ethers.parseEther(formData.goal);
       const durationSec = parseInt(formData.duration) * 86400;
 
-      const tx = await factory.createFund(formData.name, goalWei, durationSec);
+      const tx = await factory.createFund(formData.name, formData.description, goalWei, durationSec);
       await tx.wait();
 
       showAlert("success", "Project initialized on the blockchain!");
@@ -113,6 +114,20 @@ export default function CreateFund() {
                     className="w-full px-5 py-4 bg-emerald-50/50 border border-emerald-100 rounded-xl text-emerald-950 font-bold focus:border-emerald-500 focus:outline-none transition-all placeholder:text-emerald-900/30"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
+                    <Shield className="w-3.5 h-3.5 text-emerald-500" /> Mission Brief (Description)
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="Explain the impact of this fund..."
+                    className="w-full px-5 py-4 bg-emerald-50/50 border border-emerald-100 rounded-xl text-emerald-950 font-bold focus:border-emerald-500 focus:outline-none transition-all placeholder:text-emerald-900/30 resize-none"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
                 </div>
 

@@ -36,10 +36,11 @@ export default function Home() {
       for (const address of fundAddresses.slice(-12)) {
         try {
           const contract = new ethers.Contract(address, FUND_ABI, readProvider);
-          const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
+          const [creator, projectName, description, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
               contract.creator(),
               contract.projectName(),
+              contract.description(),
               contract.goal(),
               contract.deadline(),
               contract.totalRaised(),
@@ -52,6 +53,7 @@ export default function Home() {
             address,
             creator,
             projectName,
+            description,
             category: "Community",
             goal: ethers.formatEther(goal),
             deadline: Number(deadline),

@@ -21,6 +21,7 @@ export const FACTORY_ABI = [
   {
     inputs: [
       { internalType: "string", name: "name", type: "string" },
+      { internalType: "string", name: "description", type: "string" },
       { internalType: "uint256", name: "goal", type: "uint256" },
       { internalType: "uint256", name: "duration", type: "uint256" },
     ],
@@ -50,6 +51,7 @@ export const FUND_ABI = [
     inputs: [
       { internalType: "address", name: "_creator", type: "address" },
       { internalType: "string", name: "_name", type: "string" },
+      { internalType: "string", name: "_description", type: "string" },
       { internalType: "uint256", name: "_goal", type: "uint256" },
       { internalType: "uint256", name: "_duration", type: "uint256" },
     ],
@@ -90,6 +92,13 @@ export const FUND_ABI = [
   {
     inputs: [],
     name: "projectName",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "description",
     outputs: [{ internalType: "string", name: "", type: "string" }],
     stateMutability: "view",
     type: "function",
@@ -206,6 +215,7 @@ export interface FundData {
   address: string;
   creator: string;
   projectName: string;
+  description: string;
   category?: string;
   goal: string;
   deadline: number;

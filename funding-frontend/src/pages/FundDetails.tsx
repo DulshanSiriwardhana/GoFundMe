@@ -34,10 +34,11 @@ export default function FundDetails() {
             }
 
             const contract = new ethers.Contract(address, FUND_ABI, provider);
-            const [creator, projectName, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
+            const [creator, projectName, description, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
                 await Promise.all([
                     contract.creator(),
                     contract.projectName(),
+                    contract.description(),
                     contract.goal(),
                     contract.deadline(),
                     contract.totalRaised(),
@@ -50,6 +51,7 @@ export default function FundDetails() {
                 address,
                 creator,
                 projectName,
+                description,
                 category: backendData?.category || "Community",
                 goal: ethers.formatEther(goal),
                 deadline: Number(deadline),
@@ -186,9 +188,9 @@ export default function FundDetails() {
 
                     <div className="space-y-6">
                         <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic border-l-4 border-emerald-500 pl-4">Campaign Details</h3>
-                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base">
+                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base whitespace-pre-wrap">
                             <p>
-                                This campaign is powered by the GoFundChain protocol, ensuring every donation is transparently handled by on-chain smart contracts.
+                                {fund.description || "This campaign is powered by the GoFundChain protocol, ensuring every donation is transparently handled by on-chain smart contracts."}
                             </p>
                             <p>
                                 Contributors are part of a global community supporting creative and charitable initiatives without intermediaries. Your participation directly fuels the creator's project.

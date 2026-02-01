@@ -38,6 +38,7 @@ app.get("/api/funds", async (req: Request, res: Response) => {
     if (search) {
       query.$or = [
         { projectName: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
         { address: { $regex: search, $options: "i" } }
       ];
     }
