@@ -139,6 +139,7 @@ export default function MyFunds() {
               key={fund.address}
               name={fund.projectName}
               description={fund.description}
+              imageUri={fund.imageUri}
               goal={fund.goal}
               raised={fund.totalRaised}
               creator={fund.creator}

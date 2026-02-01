@@ -167,8 +167,12 @@ export default function AdminDashboard() {
                         <div className="space-y-6">
                             {stats?.recentFunds.map((fund, i) => (
                                 <div key={i} className="flex gap-4 items-center group cursor-pointer" onClick={() => navigate(`/fund/${fund.address}`)}>
-                                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 font-black text-xs border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                                        {fund.projectName.charAt(0)}
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 font-black text-xs border border-emerald-100 group-hover:shadow-md transition-all overflow-hidden">
+                                        {fund.imageUri ? (
+                                            <img src={fund.imageUri} className="w-full h-full object-cover" alt="" />
+                                        ) : (
+                                            fund.projectName.charAt(0)
+                                        )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h5 className="font-bold text-emerald-950 text-sm truncate">{fund.projectName}</h5>

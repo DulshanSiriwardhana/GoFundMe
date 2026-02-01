@@ -21,7 +21,11 @@ export default function FundDetails() {
     const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
     const loadFundData = useCallback(async () => {
-        if (!address || !provider) return;
+        if (!address || !provider) {
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
         try {
             let backendData = null;
             try {

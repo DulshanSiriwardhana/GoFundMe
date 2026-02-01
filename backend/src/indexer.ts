@@ -59,6 +59,8 @@ async function indexFund(address: string, provider: any) {
                 fundContract.requestCount()
             ]);
 
+        console.log(`Indexing fund ${address}: name=${name}, imageUri=${imageUri}`);
+
         await Fund.findOneAndUpdate(
             { address },
             {
@@ -81,7 +83,7 @@ async function indexFund(address: string, provider: any) {
 
         setupEventListeners(address, fundContract, provider);
     } catch (error) {
-        // Standard logging for unexpected failures
+        console.error(`Error indexing fund ${address}:`, error);
     }
 }
 
