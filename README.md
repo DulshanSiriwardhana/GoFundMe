@@ -26,23 +26,24 @@ graph TD
 ```
 
 ### 1. Smart Contract Layer (The Source of Truth)
-- **FundFactory**: A singleton contract that deploys individual `Fund` instances. It keeps track of all projects created on the protocol.
+- **FundFactory**: A singleton contract that deploys individual Fund instances. It keeps track of all projects created on the protocol.
 - **Fund**: Individual non-custodial contracts for each campaign. They handle deposits, goal tracking, and deadline enforcement autonomously.
 
 ### 2. Indexer & Backend (Real-time Discovery)
-- **Indexer**: Monitors the blockchain for `FundCreated`, `Funded`, and `Withdrawn` events. It syncs on-chain data into MongoDB to enable instant search and high-speed global analytics.
+- **Indexer**: Monitors the blockchain for FundCreated, Funded, and Withdrawn events. It syncs on-chain data into MongoDB to enable instant search and high-speed global analytics.
 - **REST API**: Provides structured data to the frontend, including aggregated platform statistics for the Admin Dashboard and complex search queries.
 
 ### 3. Frontend (Premium Experience)
 - A sleek, responsive dashboard built with **React**, **Tailwind CSS**, and **Lucide Icons**.
-- Integrated with **Ethers.js** for direct blockchain interaction and **Metamask** for secure transaction signing.
+- Integrated with **Ethers.js** for direct blockchain interaction.
+- Support for **Metamask** and **WalletConnect** (via Reown AppKit) for secure transaction signing across desktop and mobile.
 
 ---
 
 ## Key Features
 
 - **Decentralized Creation**: Anyone can launch a fund by specifying a name, description, goal, and duration.
-- **On-Chain Descriptions**: Project missions are stored directly on the blockchain, ensuring immutable context.
+- **On-Chain Descriptions and Images**: Project missions and IPFS image URIs are stored directly on the blockchain, ensuring immutable context.
 - **Admin Command Center**: A management dashboard for the protocol deployer with global funding analytics.
 - **Real-time Search**: Instant discovery of funds by name, address, or description keywords.
 - **Premium UI/UX**: Custom design system featuring emerald-themed aesthetics, glassmorphism, and optimized scrollbar experiences.
@@ -63,7 +64,7 @@ graph TD
 
 ## Getting Started
 
-To run this project locally, please refer to the detailed [LOCAL_SETUP.md](file:///home/dulshan/GoFundMe/LOCAL_SETUP.md) guide.
+To run this project locally, please refer to the detailed [LOCAL_SETUP.md](LOCAL_SETUP.md) guide.
 
 ## License
 MIT License - Developed for decentralized transparency.
