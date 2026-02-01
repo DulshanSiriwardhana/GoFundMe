@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { ArrowRight, Zap, Globe, ShieldCheck, Search, Filter, Sparkles, TrendingUp } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import FundCard from "../components/FundCard";
+import Loader from "../components/Loader";
 import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { useWeb3 } from "../context/Web3Context";
 
@@ -212,10 +213,8 @@ export default function Home() {
         </div>
 
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-80 bg-emerald-50/50 rounded-2xl animate-pulse" />
-            ))}
+          <div className="py-20">
+            <Loader message="Fetching Active Campaigns" />
           </div>
         ) : filteredFunds.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

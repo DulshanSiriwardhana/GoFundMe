@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3 } from "../context/Web3Context";
 import { FUND_ABI, type FundData } from "../utils/contract";
+import Loader from "../components/Loader";
 import { Card } from "../components/ui/Card";
 import { AlertCircle, Clock, Heart, ArrowLeft, Share2, Zap, Globe, TreePine, Shield } from "lucide-react";
 import { useAlert } from "../context/AlertContext";
@@ -112,10 +113,7 @@ export default function FundDetails() {
     }, [fund?.category]);
 
     if (loading) return (
-        <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <div className="w-12 h-12 border-2 border-emerald-100 border-t-emerald-600 rounded-full animate-spin" />
-            <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">Syncing Data...</p>
-        </div>
+        <Loader message="Syncing Campaign Data" />
     );
 
     if (!fund) return (

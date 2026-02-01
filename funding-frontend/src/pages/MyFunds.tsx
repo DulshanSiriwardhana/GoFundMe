@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
 import FundCard from "../components/FundCard";
+import Loader from "../components/Loader";
 import { FACTORY_ABI, FACTORY_ADDRESS, FUND_ABI, type FundData } from "../utils/contract";
 import { Layout, ArrowRight, Plus } from "lucide-react";
 
@@ -119,10 +120,8 @@ export default function MyFunds() {
       </section>
 
       {loading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2].map(i => (
-            <div key={i} className="h-80 bg-emerald-50/50 rounded-2xl animate-pulse" />
-          ))}
+        <div className="py-20">
+          <Loader message="Retrieving Your Campaigns" />
         </div>
       ) : funds.length > 0 ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Card } from "../components/ui/Card";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 interface AdminStats {
     overview: {
@@ -78,14 +79,9 @@ export default function AdminDashboard() {
         );
     }
 
-    if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center py-32 space-y-4">
-                <div className="w-12 h-12 border-2 border-emerald-100 border-t-emerald-600 rounded-full animate-spin" />
-                <p className="text-emerald-900/40 font-bold uppercase tracking-widest text-[10px]">Compiling Global Analytics...</p>
-            </div>
-        );
-    }
+    if (loading) return (
+        <Loader message="Querying Protocol Intelligence" />
+    );
 
     return (
         <div className="space-y-12 pb-24">
