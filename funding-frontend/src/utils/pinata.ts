@@ -7,10 +7,18 @@ export const uploadToPinata = async (file: File): Promise<string> => {
         throw new Error("Pinata JWT is not configured. Please get your JWT from Pinata.cloud and paste it into funding-frontend/.env");
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
+    let safeName = file.name;
+    if (file.name.length > 50) {
+        const extIndex = file.name.lastIndexOf('.');
+        const ext = extIndex !== -1 ? file.name.substring(extIndex) : '';
+        const nameWithoutExt = extIndex !== -1 ? file.name.substring(0, extIndex) : file.name;
+        safeName = nameWithoutExt.substring(0, 40) + "..." + ext;
+    }
 
-    const safeName = file.name.length > 100 ? file.name.substring(0, 97) + "..." : file.name;
+    const formData = new FormData();
+    // Use safeName as the third argument to override the long filename
+    formData.append('file', file, safeName);
+
     const metadata = JSON.stringify({
         name: `Fund Image - ${safeName}`,
     });
