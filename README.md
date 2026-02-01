@@ -52,7 +52,7 @@ graph TD
 ## 📂 Project Structure
 
 ```bash
-├── smartcontracts/      # Hardhat + Viem contract development & deployment
+├── smartcontracts2.0/   # Hardhat + Viem contract development & deployment
 ├── funding-frontend/    # Vite + React frontend application
 ├── backend/             # Node.js API + MongoDB Indexer
 ├── LOCAL_SETUP.md       # Step-by-step local execution guide

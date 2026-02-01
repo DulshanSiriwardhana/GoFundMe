@@ -20,9 +20,9 @@ anvil
 ---
 
 ## 3. Deploy Smart Contracts
-Open a new terminal and navigate to the `smartcontracts` directory:
+Open a new terminal and navigate to the `smartcontracts2.0` directory:
 ```bash
-cd smartcontracts
+cd smartcontracts2.0
 npm install
 npx hardhat run scripts/deploy.ts --network localhost
 ```
