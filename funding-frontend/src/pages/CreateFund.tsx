@@ -40,7 +40,7 @@ export default function CreateFund() {
       const goalWei = ethers.parseEther(formData.goal);
       const durationSec = parseInt(formData.duration) * 86400;
 
-      const tx = await factory.createFund(formData.name, formData.description, imageUri, goalWei, durationSec);
+      const tx = await factory.createFund(formData.name, goalWei, durationSec);
       await tx.wait();
 
       showAlert("success", "Project initialized on the blockchain!");

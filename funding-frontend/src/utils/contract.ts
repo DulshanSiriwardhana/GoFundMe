@@ -1,4 +1,4 @@
-export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
 export const FUND_ADDRESS = import.meta.env.VITE_FUND_ADDRESS || "";
 export const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
@@ -21,8 +21,6 @@ export const FACTORY_ABI = [
   {
     inputs: [
       { internalType: "string", name: "name", type: "string" },
-      { internalType: "string", name: "description", type: "string" },
-      { internalType: "string", name: "imageUri", type: "string" },
       { internalType: "uint256", name: "goal", type: "uint256" },
       { internalType: "uint256", name: "duration", type: "uint256" },
     ],
@@ -51,11 +49,9 @@ export const FUND_ABI = [
   {
     inputs: [
       { internalType: "address", name: "_creator", type: "address" },
-      { indexed: false, internalType: "string", name: "_name", type: "string" },
-      { indexed: false, internalType: "string", name: "_description", type: "string" },
-      { indexed: false, internalType: "string", name: "_imageUri", type: "string" },
-      { indexed: false, internalType: "uint256", name: "_goal", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "_duration", type: "uint256" },
+      { internalType: "string", name: "_name", type: "string" },
+      { internalType: "uint256", name: "_goal", type: "uint256" },
+      { internalType: "uint256", name: "_duration", type: "uint256" },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -94,20 +90,6 @@ export const FUND_ABI = [
   {
     inputs: [],
     name: "projectName",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "description",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "imageUri",
     outputs: [{ internalType: "string", name: "", type: "string" }],
     stateMutability: "view",
     type: "function",

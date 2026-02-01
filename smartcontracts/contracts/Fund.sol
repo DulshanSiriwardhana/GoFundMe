@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 contract Fund is ReentrancyGuard {
     address public creator;
     string public projectName;
-    string public description;
-    string public imageUri;
     uint public goal;
     uint public deadline;
     uint public totalRaised;
@@ -35,15 +33,11 @@ contract Fund is ReentrancyGuard {
     constructor(
         address _creator,
         string memory _name,
-        string memory _description,
-        string memory _imageUri,
         uint _goal,
         uint _duration
     ) {
         creator = _creator;
         projectName = _name;
-        description = _description;
-        imageUri = _imageUri;
         goal = _goal;
         deadline = block.timestamp + _duration;
     }
