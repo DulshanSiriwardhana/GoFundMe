@@ -45,9 +45,11 @@ async function indexFund(address: string, provider: any) {
     try {
         const fundContract = new ethers.Contract(address, FUND_ABI, provider);
 
-        const [name, creator, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
+        const [name, description, imageUri, creator, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
                 fundContract.projectName(),
+                fundContract.description(),
+                fundContract.imageUri(),
                 fundContract.creator(),
                 fundContract.goal(),
                 fundContract.deadline(),
@@ -56,9 +58,6 @@ async function indexFund(address: string, provider: any) {
                 fundContract.contributorCount(),
                 fundContract.requestCount()
             ]);
-
-        const description = "";
-        const imageUri = "";
 
         await Fund.findOneAndUpdate(
             { address },

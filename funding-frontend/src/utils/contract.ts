@@ -1,60 +1,136 @@
-export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
+export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0x0165878A594ca255338adfa4d48449f69242Eb8F";
 export const FUND_ADDRESS = import.meta.env.VITE_FUND_ADDRESS || "";
 export const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 export const FACTORY_ABI = [
   {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: "address", name: "fund", type: "address" },
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "creator",
-        type: "address",
+        "indexed": false,
+        "internalType": "address",
+        "name": "fund",
+        "type": "address"
       },
-      { indexed: false, internalType: "string", name: "name", type: "string" },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
     ],
-    name: "FundCreated",
-    type: "event",
+    "name": "FundCreated",
+    "type": "event"
   },
   {
-    inputs: [
-      { internalType: "string", name: "name", type: "string" },
-      { internalType: "uint256", name: "goal", type: "uint256" },
-      { internalType: "uint256", name: "duration", type: "uint256" },
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "imageUri",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "goal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "duration",
+        "type": "uint256"
+      }
     ],
-    name: "createFund",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "createFund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    name: "deployedFunds",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployedFunds",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getFunds",
-    outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
+    "inputs": [],
+    "name": "getFunds",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ] as const;
 
 export const FUND_ABI = [
   {
-    inputs: [
-      { internalType: "address", name: "_creator", type: "address" },
-      { internalType: "string", name: "_name", type: "string" },
-      { internalType: "uint256", name: "_goal", type: "uint256" },
-      { internalType: "uint256", name: "_duration", type: "uint256" },
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_creator",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_imageUri",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_goal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_duration",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
     anonymous: false,
@@ -86,6 +162,32 @@ export const FUND_ABI = [
     outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
+  },
+  {
+    "inputs": [],
+    "name": "description",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "imageUri",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     inputs: [],

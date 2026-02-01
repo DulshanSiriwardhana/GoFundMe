@@ -32,6 +32,16 @@ export const FACTORY_ABI = [
                 "type": "string"
             },
             {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "imageUri",
+                "type": "string"
+            },
+            {
                 "internalType": "uint256",
                 "name": "goal",
                 "type": "uint256"
@@ -92,6 +102,16 @@ export const FUND_ABI = [
             {
                 "internalType": "string",
                 "name": "_name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_imageUri",
                 "type": "string"
             },
             {
@@ -248,6 +268,19 @@ export const FUND_ABI = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "description",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -294,6 +327,19 @@ export const FUND_ABI = [
                 "internalType": "bool",
                 "name": "",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "imageUri",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
