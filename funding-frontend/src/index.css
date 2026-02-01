@@ -12,7 +12,6 @@
   --color-primary: #014d40;
   --color-secondary: #f0fdf4;
   --color-accent: #fbbf24;
-  /* Standardized contrast levels */
   --color-contrast-low: rgb(1 77 64 / 0.4);
   --color-contrast-mid: rgb(1 77 64 / 0.6);
   --color-contrast-high: rgb(1 77 64 / 0.8);
@@ -21,7 +20,6 @@
 html,
 body {
   background-color: #f8fafc;
-  /* More balanced neutral background */
   color: #014d40;
   font-family: 'Spectral', serif !important;
   -webkit-font-smoothing: antialiased;
@@ -88,31 +86,35 @@ textarea {
   animation: slide-in 0.3s ease-out;
 }
 
+/* Global scrollbar styles */
+html,
+body,
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: #014d40 #f8fafc !important;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px !important;
+  height: 10px !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f8fafc !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #014d4033;
-  border-radius: 10px;
+  background-color: #014d40 !important;
+  border-radius: 20px !important;
+  border: 2px solid #f8fafc !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #014d40;
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #014d4033 transparent;
+  background-color: #003028 !important;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 .no-scrollbar {
