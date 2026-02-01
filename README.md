@@ -1,8 +1,8 @@
-# GoFundChain Protocol 🚀
+# GoFundChain Protocol
 
 GoFundChain is a decentralized crowdfunding platform built on Ethereum. It allows creators to launch funding campaigns with transparent, on-chain rules, and enables donors to contribute securely using ETH.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The system follows a modern Web3 architecture, combining decentralized smart contracts with a high-performance off-chain indexing layer for a seamless user experience.
 
@@ -39,7 +39,7 @@ graph TD
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **Decentralized Creation**: Anyone can launch a fund by specifying a name, description, goal, and duration.
 - **On-Chain Descriptions**: Project missions are stored directly on the blockchain, ensuring immutable context.
@@ -49,7 +49,7 @@ graph TD
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 ├── smartcontracts2.0/   # Hardhat + Viem contract development & deployment
@@ -61,9 +61,9 @@ graph TD
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 To run this project locally, please refer to the detailed [LOCAL_SETUP.md](file:///home/dulshan/GoFundMe/LOCAL_SETUP.md) guide.
 
-## ⚖️ License
+## License
 MIT License - Developed for decentralized transparency.
