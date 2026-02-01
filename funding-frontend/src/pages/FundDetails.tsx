@@ -164,7 +164,7 @@ export default function FundDetails() {
                     </div>
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-emerald-950 leading-tight tracking-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-emerald-950 leading-tight tracking-tight break-words">
                     {fund.projectName}
                 </h1>
 
@@ -218,7 +218,7 @@ export default function FundDetails() {
 
                     <div className="space-y-6">
                         <h3 className="text-2xl font-black text-emerald-950 tracking-tight italic border-l-4 border-emerald-500 pl-4">Campaign Details</h3>
-                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base whitespace-pre-wrap">
+                        <div className="text-emerald-950/70 font-medium leading-relaxed space-y-4 text-base whitespace-pre-wrap break-words">
                             <p>
                                 {fund.description || "This campaign is powered by the GoFundChain protocol, ensuring every donation is transparently handled by on-chain smart contracts."}
                             </p>

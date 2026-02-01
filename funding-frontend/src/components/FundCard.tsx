@@ -83,7 +83,7 @@ export default function FundCard({
       <div className="p-6 flex flex-col flex-1 space-y-4">
         <div className="space-y-1.5">
           <div className="flex justify-between items-start gap-4">
-            <h3 className="text-lg font-black text-emerald-950 leading-tight group-hover:text-emerald-600 transition-colors">
+            <h3 className="text-lg font-black text-emerald-950 leading-tight group-hover:text-emerald-600 transition-colors line-clamp-1">
               {name}
             </h3>
           </div>

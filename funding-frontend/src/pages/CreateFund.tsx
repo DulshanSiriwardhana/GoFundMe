@@ -21,6 +21,14 @@ export default function CreateFund() {
     duration: "30"
   });
 
+  const truncateFileName = (name: string, limit = 40) => {
+    if (name.length <= limit) return name;
+    const lastDot = name.lastIndexOf('.');
+    const ext = lastDot !== -1 ? name.substring(lastDot) : '';
+    const base = lastDot !== -1 ? name.substring(0, lastDot) : name;
+    return base.substring(0, limit - ext.length - 3) + "..." + ext;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signer || !account) {
@@ -179,12 +187,15 @@ export default function CreateFund() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    className="w-full px-4 py-3 bg-emerald-50/50 border border-emerald-100 rounded-xl text-emerald-950 font-bold focus:border-emerald-500 focus:outline-none transition-all file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-emerald-100 file:text-emerald-700 hover:file:bg-emerald-200"
+                    className="w-full px-4 py-3 bg-emerald-50/50 border border-emerald-100 rounded-xl text-transparent font-bold focus:border-emerald-500 focus:outline-none transition-all file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-emerald-100 file:text-emerald-700 hover:file:bg-emerald-200"
                   />
                   {file && (
-                    <p className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider ml-1 truncate">
-                      Selected: {file.name}
-                    </p>
+                    <div className="flex items-center gap-2 mt-1 px-1 min-w-0">
+                      <span className="text-[10px] font-black text-emerald-950 uppercase tracking-widest whitespace-nowrap shrink-0">Selected:</span>
+                      <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest truncate min-w-0" title={file.name}>
+                        {truncateFileName(file.name)}
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
