@@ -1,5 +1,6 @@
 export const FACTORY_ADDRESS = import.meta.env.VITE_FACTORY_ADDRESS || "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
 export const FUND_ADDRESS = import.meta.env.VITE_FUND_ADDRESS || "";
+export const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 export const FACTORY_ABI = [
   {

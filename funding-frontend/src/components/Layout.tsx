@@ -1,19 +1,26 @@
 import { type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useWeb3 } from "../context/Web3Context";
-import { Wallet, Plus, Home as HomeIcon, LayoutDashboard, Menu, X, LogOut } from "lucide-react";
+import { Wallet, Plus, Home as HomeIcon, LayoutDashboard, Menu, X, LogOut, ShieldAlert } from "lucide-react";
 import { useState } from "react";
+import { ADMIN_ADDRESS } from "../utils/contract";
 
 export default function Layout({ children }: { children: ReactNode }) {
     const { account, connectWallet, disconnectWallet } = useWeb3();
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    const isAdmin = account?.toLowerCase() === ADMIN_ADDRESS.toLowerCase();
+
     const navLinks = [
         { name: "Home", path: "/", icon: <HomeIcon className="w-4 h-4" /> },
         { name: "Create Fund", path: "/create", icon: <Plus className="w-4 h-4" /> },
         { name: "My Funds", path: "/my-funds", icon: <LayoutDashboard className="w-4 h-4" /> },
     ];
+
+    if (isAdmin) {
+        navLinks.push({ name: "Admin", path: "/admin", icon: <ShieldAlert className="w-4 h-4" /> });
+    }
 
     const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 

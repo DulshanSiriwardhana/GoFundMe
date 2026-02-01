@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import CreateFund from "./pages/CreateFund";
 import MyFunds from "./pages/MyFunds";
 import FundDetails from "./pages/FundDetails";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
               <Route path="/create" element={<CreateFund />} />
               <Route path="/my-funds" element={<MyFunds />} />
               <Route path="/fund/:address" element={<FundDetails />} />
+              <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
           </Layout>
         </BrowserRouter>

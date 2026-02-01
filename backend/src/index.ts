@@ -72,6 +72,43 @@ app.get("/api/funds/:address", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/api/admin/stats", async (_req: Request, res: Response) => {
+  try {
+    const stats = await Fund.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalFunds: { $sum: 1 },
+          totalRaised: { $sum: { $toDouble: "$totalRaised" } },
+          totalGoal: { $sum: { $toDouble: "$goal" } },
+          totalContributors: { $sum: "$contributorCount" },
+        }
+      }
+    ]);
+
+    const categoryStats = await Fund.aggregate([
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+          raised: { $sum: { $toDouble: "$totalRaised" } }
+        }
+      }
+    ]);
+
+    const recentFunds = await Fund.find().sort({ createdAt: -1 }).limit(5);
+
+    res.json({
+      overview: stats[0] || { totalFunds: 0, totalRaised: 0, totalGoal: 0, totalContributors: 0 },
+      categories: categoryStats,
+      recentFunds
+    });
+  } catch (error) {
+    console.error("Stats aggregation failed:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: "Not Found" });
 });
