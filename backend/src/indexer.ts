@@ -75,7 +75,25 @@ async function indexFund(address: string, provider: any) {
                 safeFetch("requestCount", 0n)
             ]);
 
-        console.log(`Indexing fund ${address}: name=${name}`);
+        // Fetch requests if any exist
+        const requests = [];
+        const count = Number(requestCount);
+        for (let i = 0; i < count; i++) {
+            try {
+                const req = await fundContract.requests(i);
+                requests.push({
+                    id: i,
+                    purpose: req.purpose,
+                    amount: ethers.formatEther(req.amount),
+                    completed: req.completed,
+                    approvals: Number(req.approvals)
+                });
+            } catch (e) {
+                console.warn(`Failed to fetch request ${i} for fund ${address}`);
+            }
+        }
+
+        console.log(`Indexing fund ${address}: name=${name}, requests=${requests.length}`);
 
         await Fund.findOneAndUpdate(
             { address },
@@ -92,6 +110,7 @@ async function indexFund(address: string, provider: any) {
                 goalReached,
                 contributorCount: Number(contributorCount),
                 requestCount: Number(requestCount),
+                requests,
                 updatedAt: new Date()
             },
             { upsert: true, new: true }
@@ -111,6 +130,10 @@ function setupEventListeners(address: string, contract: any, provider: any) {
     });
 
     contract.on("Withdrawn", async (_amount: bigint) => {
+        await indexFund(address, provider);
+    });
+
+    contract.on("RequestCreated", async (_purpose: string, _amount: bigint) => {
         await indexFund(address, provider);
     });
 
