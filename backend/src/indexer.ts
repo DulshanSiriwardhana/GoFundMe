@@ -33,11 +33,17 @@ export async function startIndexer() {
 async function syncAllFunds(factory: any, provider: any) {
     try {
         const fundAddresses = await factory.getFunds();
+        console.log(`Starting sync for ${fundAddresses.length} funds...`);
         for (const address of fundAddresses) {
-            await indexFund(address, provider);
+            try {
+                await indexFund(address, provider);
+            } catch (error) {
+                console.error(`Failed to index fund at ${address}:`, error);
+            }
         }
+        console.log("Initial sync completed.");
     } catch (error) {
-        // Silently handle sync errors in production
+        console.error("Failed to fetch fund addresses for sync:", error);
     }
 }
 
@@ -45,21 +51,31 @@ async function indexFund(address: string, provider: any) {
     try {
         const fundContract = new ethers.Contract(address, FUND_ABI, provider);
 
+        // Fetch fields with individual error handling for backward compatibility or corrupt data
+        const safeFetch = async (method: string, fallback: any = "") => {
+            try {
+                return await fundContract[method]();
+            } catch (e) {
+                console.warn(`Method ${method} failed for fund ${address}, using fallback.`);
+                return fallback;
+            }
+        };
+
         const [name, description, imageUri, creator, goal, deadline, totalRaised, goalReached, contributorCount, requestCount] =
             await Promise.all([
-                fundContract.projectName(),
-                fundContract.description(),
-                fundContract.imageUri(),
-                fundContract.creator(),
-                fundContract.goal(),
-                fundContract.deadline(),
-                fundContract.totalRaised(),
-                fundContract.goalReached(),
-                fundContract.contributorCount(),
-                fundContract.requestCount()
+                safeFetch("projectName"),
+                safeFetch("description"),
+                safeFetch("imageUri"),
+                safeFetch("creator"),
+                safeFetch("goal", 0n),
+                safeFetch("deadline", 0n),
+                safeFetch("totalRaised", 0n),
+                safeFetch("goalReached", false),
+                safeFetch("contributorCount", 0n),
+                safeFetch("requestCount", 0n)
             ]);
 
-        console.log(`Indexing fund ${address}: name=${name}, imageUri=${imageUri}`);
+        console.log(`Indexing fund ${address}: name=${name}`);
 
         await Fund.findOneAndUpdate(
             { address },
@@ -83,7 +99,7 @@ async function indexFund(address: string, provider: any) {
 
         setupEventListeners(address, fundContract, provider);
     } catch (error) {
-        console.error(`Error indexing fund ${address}:`, error);
+        console.error(`Critical error indexing fund ${address}:`, error);
     }
 }
 

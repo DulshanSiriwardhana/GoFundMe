@@ -92,21 +92,58 @@ export default function Home() {
   const loadFunds = useCallback(async () => {
     setLoading(true);
     try {
+      // 1. Check blockchain status for the source of truth
+      const readProvider = getReadProvider();
+      let blockchainCount = 0;
+      let lastBlockchainAddress = "";
+
+      if (readProvider) {
+        try {
+          const factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, readProvider);
+          const allFunds = await factory.getFunds();
+          blockchainCount = allFunds.length;
+          if (blockchainCount > 0) {
+            lastBlockchainAddress = allFunds[blockchainCount - 1].toLowerCase();
+          }
+        } catch (err) {
+          console.warn("Could not check blockchain status:", err);
+        }
+      }
+
+      // 2. Try fetching from API
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
       const response = await fetch(`${apiBaseUrl}/api/funds?search=${searchQuery}`);
+
       if (response.ok) {
         const data = await response.json();
-        setFunds(data.funds);
+        const apiFunds = data.funds || [];
+
+        // 3. Compare API results with Blockchain source of truth
+        const apiHasLatest = blockchainCount === 0 ||
+          apiFunds.some((f: any) => f.address.toLowerCase() === lastBlockchainAddress);
+
+        if (apiHasLatest) {
+          setFunds(apiFunds);
+          setLoading(false);
+          return;
+        } else {
+          console.log("API data appears stale, falling back to blockchain...");
+        }
       } else {
-        throw new Error("Backend unavailable");
+        console.warn("Backend API unavailable, falling back to blockchain...");
       }
+
+      // 4. Fallback: Load directly from blockchain
+      const blockchainFunds = await loadFundsFromBlockchain();
+      setFunds(blockchainFunds);
     } catch (err) {
+      console.error("Load funds failed:", err);
       const blockchainFunds = await loadFundsFromBlockchain();
       setFunds(blockchainFunds);
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, loadFundsFromBlockchain]);
+  }, [searchQuery, loadFundsFromBlockchain, getReadProvider]);
 
   useEffect(() => {
     loadFunds();
