@@ -317,6 +317,7 @@ export interface FundData {
   goalReached: boolean;
   contributorCount: number;
   requestCount: number;
+  requests?: Request[];
 }
 
 export interface Request {

@@ -13,6 +13,13 @@ const FundSchema = new mongoose.Schema({
     goalReached: { type: Boolean, default: false },
     contributorCount: { type: Number, default: 0 },
     requestCount: { type: Number, default: 0 },
+    requests: [{
+        purpose: String,
+        amount: String,
+        completed: Boolean,
+        approvals: Number,
+        id: Number
+    }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
