@@ -34,7 +34,7 @@ graph TD
 - **REST API**: Provides structured data to the frontend, including aggregated platform statistics for the Admin Dashboard and complex search queries.
 
 ### 3. Frontend (Premium Experience)
-- A sleek, responsive dashboard built with **React**, **Tailwind CSS**, and **Lucide Icons**.
+- A modern, responsive dashboard developed using **React**, **Tailwind CSS**, and **Lucide Icons**.
 - Integrated with **Ethers.js** for direct blockchain interaction.
 - Support for **Metamask** and **WalletConnect** (via Reown AppKit) for secure transaction signing across desktop and mobile.
 
