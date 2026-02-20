@@ -66,5 +66,3 @@ graph TD
 
 To run this project locally, please refer to the detailed [LOCAL_SETUP.md](LOCAL_SETUP.md) guide.
 
-## License
-MIT License - Developed for decentralized transparency.
